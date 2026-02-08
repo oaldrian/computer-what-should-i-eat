@@ -1,0 +1,294 @@
+<!doctype html>
+<!--
+  Random Item Picker - Single-file SPA
+  Purpose: Minimal client-only app that ships a builtin dataset and
+  allows local additions/overrides persisted to localStorage.
+
+  Notes:
+  - This file contains a small CSS token set, HTML UI skeleton, and a
+    compact JavaScript module implementing data-store helpers.
+  - Further steps will add rendering, filtering, random selection,
+    forms, and import/export.
+-->
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Computer, Was soll ich essen?</title>
+  <style>
+    :root{
+      --bg:#f6f8fb; --card:#ffffff; --accent:#0b74de; --muted:#6b7280; --success:#16a34a;
+      --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+      --radius:10px; --shadow: 0 6px 20px rgba(2,6,23,.06);
+    }
+    html,body{height:100%;margin:0;background:var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;color:#0f172a}
+    .app{max-width:97vw;margin:28px auto;padding:20px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    header h1{margin:0;font-size:20px}
+    .controls{display:flex;gap:8px;align-items:center}
+    button{background:var(--accent);color:white;border:0;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600}
+    .secondary{background:transparent;color:var(--accent);border:1px solid rgba(11,116,222,.12);padding:6px 10px}
+    .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+    .filters label{display:flex;flex-direction:column;font-size:13px;color:var(--muted)}
+    .filters select{margin-top:6px;padding:6px 8px;border-radius:8px;border:1px solid #e6eefc;background:white}
+    main{display:grid;grid-template-columns:1fr 2fr;gap:16px}
+    header{display:flex;flex-direction:column;align-items:center;margin-bottom:14px}
+    .list{display:flex;flex-direction:column;gap:12px}
+    .card{background:var(--card);padding:12px;border-radius:10px;box-shadow:var(--shadow);display:flex;justify-content:space-between;align-items:flex-start;cursor:pointer}
+    .card .details{display:none;margin-top:8px}
+    .card.expanded .details{display:block}
+    .title-row{display:flex;gap:8px;align-items:flex-end}
+    .note-inline{font-size:13px;color:var(--muted)}
+    .card div{line-height:1.2}
+    .meta{font-size:13px;color:var(--muted);margin-top:6px}
+    .badge{background:#eef2ff;color:var(--accent);padding:6px 10px;border-radius:999px;font-size:12px}
+    .result{background:linear-gradient(180deg,#fff,#f8fafc);padding:12px;border-radius:10px;box-shadow:var(--shadow)}
+    /* modal skeleton */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,.35);z-index:800}
+    .modal .sheet{background:var(--card);width:640px;max-width:95%;padding:18px;border-radius:12px;box-shadow:var(--shadow)}
+    .card .actions{display:flex;gap:8px}
+    .attr-badge{margin-right:6px;font-size:12px;background:#f3f4f6;padding:4px 6px;border-radius:6px}
+    .controls input[type=file]{display:none}
+    .secondary[disabled]{opacity:.5;pointer-events:none}
+    pre{white-space:pre-wrap}
+    @media(max-width:900px){main{grid-template-columns:1fr;gap:12px}.controls{flex-wrap:wrap}}
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <header>
+      <h1>Computer, Was soll ich essen?</h1>
+      <div class="controls">
+        <button id="btn-random">Zufällig</button>
+      </div>
+    </header>
+
+    <div id="top-result" style="text-align:center;margin-bottom:12px">
+      <aside class="result" id="result">
+        <strong>Ergebnis</strong>
+        <div id="result-content"><em>Noch keine Auswahl.</em></div>
+      </aside>
+    </div>
+
+    <section style="display:flex;gap:12px;align-items:flex-start">
+      <div style="flex:0 0 50%">
+        <div id="list-controls" style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+          <div id="builtin-counts" style="font-size:13px;color:var(--muted)">
+            <span id="builtin-count"></span>
+            <span id="local-count" style="margin-left:8px;color:var(--muted)"></span>
+          </div>
+          <div style="margin-left:auto">
+            <button id="btn-add">Hinzufügen</button>
+            <button id="list-export" class="secondary">Exportieren</button>
+            <button id="list-import" class="secondary">Importieren</button>
+            <input id="list-import-file" type="file" accept="application/json" style="display:none" />
+          </div>
+        </div>
+        <section class="filters" id="filters-list" aria-label="Filter Liste">
+          <!-- list-only filters -->
+        </section>
+        <section class="list" id="list" aria-live="polite">
+          <!-- item cards -->
+        </section>
+      </div>
+
+      <div style="flex:1">
+        <section class="filters" id="filters-random" aria-label="Filter Zufall">
+          <!-- random-only filters -->
+        </section>
+      </div>
+    </section>
+
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
+      <div class="sheet" id="modal-sheet">
+        <h3 id="modal-title">Hinzufügen / Bearbeiten</h3>
+        <form id="item-form">
+          <!-- dynamic form fields -->
+          <div style="margin-top:8px">
+            <label>Name <input name="name" required style="width:100%;padding:8px;margin-top:6px"/></label>
+          </div>
+          <div id="attr-rows" style="margin-top:8px"></div>
+          <div style="margin-top:8px"><button type="button" id="add-attr" class="secondary">Attribut hinzufügen</button></div>
+          <div style="margin-top:8px"><label>Notiz <textarea name="note" rows="2" placeholder="(optional)" style="width:100%;padding:8px;margin-top:6px"></textarea></label></div>
+          <div style="margin-top:8px"><label>Bewertung <select name="rating">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select></label></div>
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+            <button type="button" id="cancel">Abbrechen</button>
+            <button type="submit" id="save">Speichern</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+  (function(){
+    'use strict';
+
+    /** Builtin dataset */
+    const builtinItems = [
+      {id: 'b1', name: 'French Fries', attributes:{sweet:'no', carb:'potato', meat:'no'}, rating:3, note:'Beliebte Beilage'},
+      {id: 'b2', name: 'Chicken Curry', attributes:{sweet:'no', carb:'rice', meat:'chicken'}, rating:4, note:'Würzig'},
+      {id: 'b3', name: 'Apple Pie', attributes:{sweet:'yes', carb:'bread', meat:'no'}, rating:5, note:'Süß und beliebt'},
+      {id: 'b4', name: 'Beef Noodles', attributes:{sweet:'no', carb:'noodle', meat:'beef'}, rating:4, note:'Herzhaft'}
+    ];
+
+    const LS_KEYS = { LOCAL: 'picker_items_local', OVERRIDES: 'picker_items_overrides' };
+
+    function readJSON(key, fallback){ try{ const raw = localStorage.getItem(key); if(!raw) return fallback; return JSON.parse(raw);}catch(e){ console.warn('Failed to parse', key, e); return fallback; } }
+    function writeJSON(key, value){ try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){ console.error('Failed to write', key, e); } }
+    function generateId(){ if(window.crypto && crypto.randomUUID) return crypto.randomUUID(); return Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,9); }
+    function loadLocal(){ const itemsLocal = readJSON(LS_KEYS.LOCAL, []); const itemsOverrides = readJSON(LS_KEYS.OVERRIDES, {}); return { itemsLocal, itemsOverrides }; }
+    function saveLocal(itemsLocal){ writeJSON(LS_KEYS.LOCAL, itemsLocal); }
+    function saveOverrides(overrides){ writeJSON(LS_KEYS.OVERRIDES, overrides); }
+
+    window.__picker = { builtinItems, loadLocal, saveLocal, saveOverrides, generateId };
+
+    // Application state
+    const state = { itemsLocal: [], itemsOverrides: {}, filters: {}, effectiveItems: [], lastFiltered: [] };
+
+    function computeEffectiveItems(builtin, itemsLocal, overrides){
+      const effective = [];
+      for(const b of builtin){
+        const ov = overrides && overrides[b.id];
+        const merged = ov ? Object.assign({}, b, ov) : Object.assign({}, b);
+        // shallow-merge attributes so overrides only replace provided keys
+        merged.attributes = Object.assign({}, b.attributes || {}, (ov && ov.attributes) || {});
+        // note: allow override to replace note, otherwise inherit builtin note
+        merged.note = (ov && ov.note !== undefined) ? ov.note : (b.note || '');
+        merged.meta = { source: ov ? 'Überschrieben' : 'Eingebaut' };
+        effective.push(merged);
+      }
+      for(const l of itemsLocal){ const copy = Object.assign({}, l); copy.attributes = copy.attributes || {}; copy.note = l.note || ''; copy.meta = { source: 'Lokal' }; effective.push(copy); }
+      return effective;
+    }
+
+    function deriveFilterKeys(items){ const keys = new Set(); for(const it of items){ if(it.attributes){ for(const k in it.attributes) keys.add(k); } } return Array.from(keys); }
+    function collectFilterValues(items, key){ const vals = new Set(); for(const it of items){ if(it.attributes && it.attributes[key] !== undefined) vals.add(String(it.attributes[key])); } return Array.from(vals).sort(); }
+    function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function renderFilters(items, containerId, filtersObj){
+      const container = document.getElementById(containerId); container.innerHTML = '';
+      const clearBtn = document.createElement('button'); clearBtn.className='secondary'; clearBtn.textContent='Filter zurücksetzen'; clearBtn.addEventListener('click', ()=>{ for(const k in filtersObj) filtersObj[k]=''; renderList(); }); container.appendChild(clearBtn);
+      const ratings = Array.from(new Set(items.map(i=>i.rating).filter(Boolean))).sort((a,b)=>a-b);
+      if(ratings.length){ const lab = document.createElement('label'); lab.textContent='Bewertung'; const sel = document.createElement('select'); sel.dataset.filterKey='rating'; const optAll = document.createElement('option'); optAll.value=''; optAll.textContent='Alle'; sel.appendChild(optAll); ratings.forEach(r=>{ const o=document.createElement('option'); o.value=String(r); o.textContent=String(r); sel.appendChild(o); }); sel.value = filtersObj['rating']||''; sel.addEventListener('change', ()=>{ filtersObj['rating']=sel.value; renderList(); }); lab.appendChild(sel); container.appendChild(lab); }
+      const keys = deriveFilterKeys(items).sort(); keys.forEach(k=>{ if(!(k in filtersObj)) filtersObj[k]=''; });
+      keys.forEach(key=>{ const label = document.createElement('label'); label.textContent = key.charAt(0).toUpperCase()+key.slice(1); const select = document.createElement('select'); select.dataset.filterKey = key; const optAll = document.createElement('option'); optAll.value=''; optAll.textContent='Alle'; select.appendChild(optAll); collectFilterValues(items,key).forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v; select.appendChild(o); }); select.value = filtersObj[key]||''; select.addEventListener('change', ()=>{ filtersObj[key]=select.value; renderList(); }); label.appendChild(select); container.appendChild(label); });
+    }
+
+    function getFilteredItems(items, filtersObj){
+      const keys = Object.keys(filtersObj || {}).filter(k=> filtersObj[k]);
+      if(keys.length===0) return items.slice();
+      return items.filter(it=>{
+        for(const k of keys){
+          const want = filtersObj[k];
+          if(k === 'rating'){
+            const have = (it.rating !== undefined && it.rating !== null) ? String(it.rating) : '';
+            if(have !== want) return false;
+          }else{
+            const have = it.attributes && (it.attributes[k] !== undefined) ? String(it.attributes[k]) : '';
+            if(have !== want) return false;
+          }
+        }
+        return true;
+      });
+    }
+
+    function renderList(){
+      const list = document.getElementById('list'); list.innerHTML=''; state.effectiveItems = computeEffectiveItems(builtinItems, state.itemsLocal, state.itemsOverrides);
+      // render separate filters
+      if(!state.listFilters) state.listFilters = {};
+      if(!state.randomFilters) state.randomFilters = {};
+      renderFilters(state.effectiveItems, 'filters-list', state.listFilters);
+      renderFilters(state.effectiveItems, 'filters-random', state.randomFilters);
+
+      // show builtin + local counts
+      const builtinCountEl = document.getElementById('builtin-count'); const localCountEl = document.getElementById('local-count');
+      if(builtinCountEl) builtinCountEl.textContent = `${builtinItems.length} basis`;
+      if(localCountEl) localCountEl.textContent = `${state.itemsLocal.length} lokal`;
+
+      // list-specific filtering
+      const filtered = getFilteredItems(state.effectiveItems, state.listFilters);
+      state.lastFiltered = filtered;
+      if(filtered.length===0){ const no = document.createElement('div'); no.className='card'; no.textContent='Keine Elemente entsprechen den Filtern.'; list.appendChild(no); return; }
+      filtered.sort((a,b)=> String(a.name||'').localeCompare(String(b.name||'')));
+      filtered.forEach(it=>{
+        const card = document.createElement('div'); card.className='card'; card.tabIndex=0;
+        const left = document.createElement('div');
+        const titleRow = document.createElement('div'); titleRow.className = 'title-row';
+        const name = document.createElement('div'); name.textContent = it.name; name.style.fontWeight = '600';
+        titleRow.appendChild(name);
+        if(it.note){ const note = document.createElement('div'); note.className='note-inline'; note.textContent = it.note; titleRow.appendChild(note); }
+        left.appendChild(titleRow);
+
+        // hidden details: rating + attributes
+        const details = document.createElement('div'); details.className='details';
+        const rating = document.createElement('div'); rating.className='meta'; rating.textContent = (it.rating ? 'Bewertung: '+it.rating : ''); details.appendChild(rating);
+        if(it.attributes){ const attrRow = document.createElement('div'); attrRow.style.marginTop='6px'; for(const k in it.attributes){ const span = document.createElement('span'); span.className='attr-badge'; span.textContent = `${k}: ${it.attributes[k]}`; attrRow.appendChild(span); } details.appendChild(attrRow); }
+        left.appendChild(details);
+
+        const right = document.createElement('div'); card.appendChild(left); card.appendChild(right);
+
+        // toggle expand on click / keyboard (accordion: collapse others when expanding)
+        card.addEventListener('click', ()=>{
+          const willExpand = !card.classList.contains('expanded');
+          if(willExpand){ const others = list.querySelectorAll('.card.expanded'); others.forEach(c=>{ if(c!==card) c.classList.remove('expanded'); }); card.classList.add('expanded'); }
+          else { card.classList.remove('expanded'); }
+        });
+        card.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); const willExpand = !card.classList.contains('expanded'); if(willExpand){ const others = list.querySelectorAll('.card.expanded'); others.forEach(c=>{ if(c!==card) c.classList.remove('expanded'); }); card.classList.add('expanded'); } else { card.classList.remove('expanded'); } } });
+
+        list.appendChild(card);
+      });
+    }
+
+    // attach actions after render
+    function attachCardActions(card, it){ const actions = document.createElement('div'); actions.className='actions'; actions.addEventListener('click', (e)=>{ e.stopPropagation(); }); const edit = document.createElement('button'); edit.textContent='Bearbeiten'; edit.className='secondary'; edit.addEventListener('click', ()=> openModalForEdit(it)); actions.appendChild(edit); if(it.meta && it.meta.source === 'Lokal'){ const del = document.createElement('button'); del.textContent='Löschen'; del.className='secondary'; del.addEventListener('click', ()=>{ if(!confirm('Dieses lokale Element löschen?')) return; state.itemsLocal = state.itemsLocal.filter(x=>x.id!==it.id); saveLocal(state.itemsLocal); renderList(); }); actions.appendChild(del); } else if(it.meta && it.meta.source === 'Überschrieben'){ const rev = document.createElement('button'); rev.textContent='Zurücksetzen'; rev.className='secondary'; rev.addEventListener('click', ()=>{ if(!confirm('Überschreibung für dieses eingebaute Element zurücksetzen?')) return; delete state.itemsOverrides[it.id]; saveOverrides(state.itemsOverrides); renderList(); }); actions.appendChild(rev); } card.appendChild(actions); }
+
+    // After render, attach actions to cards
+    const _oldRenderList = renderList;
+    renderList = function(){ _oldRenderList(); const list = document.getElementById('list'); const cards = Array.from(list.children); const filtered = state.lastFiltered || []; for(let i=0;i<cards.length && i<filtered.length;i++){ attachCardActions(cards[i], filtered[i]); } };
+
+    // modal handling
+    const editing = { id: null, type: null };
+    function clearModal(){ const form = document.getElementById('item-form'); form.name.value=''; form.rating.value=''; document.getElementById('attr-rows').innerHTML=''; editing.id=null; editing.type=null; }
+    function addAttrRow(key='', value=''){ const rows = document.getElementById('attr-rows'); const wrap = document.createElement('div'); wrap.style.display='flex'; wrap.style.gap='6px'; wrap.style.marginTop='6px'; const k = document.createElement('input'); k.placeholder='Schlüssel'; k.value=key; k.style.flex='1'; const v = document.createElement('input'); v.placeholder='Wert'; v.value=value; v.style.flex='1'; const rem = document.createElement('button'); rem.type='button'; rem.textContent='✕'; rem.title='Entfernen'; rem.className='secondary'; rem.addEventListener('click', ()=> rows.removeChild(wrap)); wrap.appendChild(k); wrap.appendChild(v); wrap.appendChild(rem); rows.appendChild(wrap); }
+    document.getElementById('add-attr').addEventListener('click', ()=> addAttrRow());
+    function openModalForNew(){ clearModal(); document.getElementById('modal-title').textContent='Element hinzufügen'; document.getElementById('modal').style.display='flex'; document.getElementById('modal').setAttribute('aria-hidden','false'); document.getElementById('item-form').name.focus(); }
+    function openModalForEdit(item){ clearModal(); document.getElementById('modal-title').textContent = (item.meta && item.meta.source==='Eingebaut') ? 'Bearbeiten (Überschreiben)' : 'Element bearbeiten'; const form = document.getElementById('item-form'); form.name.value = item.name || ''; form.rating.value = item.rating || ''; if(item.attributes){ for(const k in item.attributes) addAttrRow(k, item.attributes[k]); } editing.id = item.id; editing.type = item.meta && item.meta.source ? item.meta.source : 'Lokal'; document.getElementById('modal').style.display='flex'; document.getElementById('modal').setAttribute('aria-hidden','false'); document.getElementById('item-form').name.focus(); }
+
+    document.getElementById('item-form').addEventListener('submit', (ev)=>{ ev.preventDefault(); const form = ev.target; const name = form.name.value.trim(); const rating = form.rating.value ? parseInt(form.rating.value,10) : undefined; const rows = document.getElementById('attr-rows'); const attrs = {}; Array.from(rows.children).forEach(r=>{ const k = r.children[0].value.trim(); const v = r.children[1].value.trim(); if(k) attrs[k]=v; }); if(editing.id){ if(editing.type === 'Lokal'){ const idx = state.itemsLocal.findIndex(x=>x.id===editing.id); if(idx>=0){ state.itemsLocal[idx] = Object.assign({}, state.itemsLocal[idx], { name, rating, attributes: attrs }); saveLocal(state.itemsLocal); } } else { const override = { name, rating, attributes: attrs }; state.itemsOverrides[editing.id] = override; saveOverrides(state.itemsOverrides); } } else { const id = generateId(); const item = { id, name, rating, attributes: attrs }; state.itemsLocal.push(item); saveLocal(state.itemsLocal); } document.getElementById('modal').style.display='none'; document.getElementById('modal').setAttribute('aria-hidden','true'); renderList(); });
+
+    document.getElementById('cancel').addEventListener('click', ()=>{ document.getElementById('modal').style.display='none'; document.getElementById('modal').setAttribute('aria-hidden','true'); });
+    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape'){ const mod = document.getElementById('modal'); if(mod.style.display==='flex'){ mod.style.display='none'; mod.setAttribute('aria-hidden','true'); } } });
+
+    // Random, Export, Import, storage sync
+    document.getElementById('btn-add').addEventListener('click', openModalForNew);
+    document.getElementById('btn-random').addEventListener('click', ()=>{
+      const arr = getFilteredItems(state.effectiveItems || [], state.randomFilters || {});
+      if(!arr || arr.length === 0){ alert('Keine Elemente zur Auswahl. Filter anpassen oder Elemente hinzufügen.'); return; }
+      const pick = arr[Math.floor(Math.random()*arr.length)]; const rc = document.getElementById('result-content'); rc.innerHTML = `<div><strong>${escapeHtml(pick.name)}</strong><div class="meta">Bewertung:${pick.rating||'—'}</div>${pick.note?'<div style="margin-top:6px">'+escapeHtml(pick.note)+'</div>':''}</div>`; });
+
+    // header export/import moved to list area: wire list export/import controls
+    document.getElementById('list-export').addEventListener('click', ()=>{ const store = { itemsLocal: state.itemsLocal, itemsOverrides: state.itemsOverrides }; const blob = new Blob([JSON.stringify(store, null, 2)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'meine-elemente.json'; a.click(); URL.revokeObjectURL(url); });
+    document.getElementById('list-import').addEventListener('click', ()=>{ document.getElementById('list-import-file').click(); });
+    document.getElementById('list-import-file').addEventListener('change', (ev)=>{ const f = ev.target.files && ev.target.files[0]; if(!f) return; const reader = new FileReader(); reader.onload = (e)=>{ try{ const parsed = JSON.parse(e.target.result); const incomingLocal = parsed.itemsLocal || []; const incomingOverrides = parsed.itemsOverrides || {}; const existingIds = new Set(state.itemsLocal.map(x=>x.id)); incomingLocal.forEach(it=>{ if(!existingIds.has(it.id)) state.itemsLocal.push(it); }); state.itemsOverrides = Object.assign({}, state.itemsOverrides, incomingOverrides); saveLocal(state.itemsLocal); saveOverrides(state.itemsOverrides); renderList(); alert('Import abgeschlossen: Lokale Elemente angehängt, Überschreibungen zusammengeführt.'); }catch(err){ alert('Ungültige JSON-Datei'); } }; reader.readAsText(f); });
+
+    window.addEventListener('storage', (e)=>{ if(e.key === LS_KEYS.LOCAL || e.key === LS_KEYS.OVERRIDES){ const s = loadLocal(); state.itemsLocal = s.itemsLocal || []; state.itemsOverrides = s.itemsOverrides || {}; renderList(); } });
+
+    // init
+    (function init(){ const store = loadLocal(); state.itemsLocal = store.itemsLocal || []; state.itemsOverrides = store.itemsOverrides || {}; renderList(); // trigger an initial random pick
+      try{ document.getElementById('btn-random').click(); }catch(e){} })();
+
+    // minimal tests
+    window.__picker.runTests = function(){ const results = []; try{ const s = loadLocal(); results.push(['loadLocal gibt Objekt zurück', !!s]); const eff = computeEffectiveItems(builtinItems, s.itemsLocal||[], s.itemsOverrides||{}); results.push(['computeEffectiveItems gibt Array zurück', Array.isArray(eff)]); results.push(['renderList läuft', (function(){ try{ renderList(); return true;}catch(e){return false;} })()]); }catch(e){ results.push(['Ausnahme', String(e)]); } console.group('Picker-Tests'); results.forEach(r=> console.log(r[0], '->', r[1])); console.groupEnd(); return results; };
+
+  })();
+  </script>
+</body>
+</html>
