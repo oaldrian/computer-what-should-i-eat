@@ -1,0 +1,501 @@
+id;name;rating;note
+r001;Gerösteter Kürbis mit Kichererbsen;;Ofenkürbis, Kichererbsen, Rosmarin
+r002;Linsencurry mit Kokosmilch;;schnell, würzig
+r003;Zucchini-Spaghetti mit Tomatensauce;;leicht, italienisch
+r004;Falafel-Bowl mit Tahini;;Proteinreich, frisch
+r005;Süßkartoffel-Quinoa-Salat;;nahrhaft, warm/kalt
+r006;Gebratene Pilze auf Polenta;;herzhaft, cremig
+r007;Mediterraner Kichererbsensalat;;Tomate, Gurke, Oliven
+r008;Rote-Bete-Risotto;;erdig, samtig
+r009;Ofen-Rosenkohl mit Honig;;knusprig, süß-herzhaft
+r010;Caprese mit Avocado;;schnell, sommerlich
+r011;Spinat-Feta-Pastete;;blätterteig, würzig
+r012;Pilz-Bourguignon mit Kartoffelpüree;;reichhaltig, comfort
+r013;Auberginen-Caponata;;süß-sauer, sizilianisch
+r014;Kichererbsenpfanne mit Paprika;;einfach, aromatisch
+r015;Bulgur-Salat mit Minze;;leicht, frisch
+r016;Gebackene Süßkartoffel mit Joghurt;;sättigend, einfach
+r017;Käse-Lauch-Suppe;;cremig, deftig
+r018;Couscous mit geröstetem Gemüse;;schnell, mediterran
+r019;Tomaten-Mozzarella-Toast;;schnell, knusprig
+r020;Brokkoli-Mandelsalat;;knackig, nussig
+r021;Vegetarische Moussaka;;schichtgericht, würzig
+r022;Bohneneintopf mit Paprika;;wärmend, hausgemacht
+r023;Pasta mit Pesto und Zitrone;;frisch, aromatisch
+r024;Gemüse-Thai-Curry;;kokos, mild scharf
+r025;Ofengemüse mit Kräuterquark;;bunt, simpel
+r026;Ratatouille mit Polenta;;provenzalisch, leicht
+r027;Marokkanischer Kichererbsen-Tajine;;gewürzt, aromatisch
+r028;Scharfe Tofu-Gemüse-Pfanne;;asiatisch, proteinreich
+r029;Kürbisgnocchi mit Salbeibutter;;buttrig, saisonal
+r030;Zitronen-Risotto mit Erbsen;;frisch, cremig
+r031;Gemüse-Lasagne;;familientauglich, sättigend
+r032;Bulgur mit gerösteten Tomaten;;herzhaft, nussig
+r033;Miso-Auberginen;;asiatisch, umami
+r034;Kichererbsen-Burger;;fleischfrei, würzig
+r035;Sobanudeln mit Sesam-Gemüse;;leicht, asiatisch
+r036;Quark-Gemüse-Auflauf;;cremig, einfach
+r037;Grünkern-Bratlinge mit Salat;;rustikal, nahrhaft
+r038;Pikante Tomatensuppe mit Basilikum;;schnell, wärmend
+r039;Reis mit sautierten Zwiebeln und Pilzen;;einfach, aromatisch
+r040;Fenchel-Orangen-Salat;;frisch, leicht
+r041;Ziegenkäse-Tarte mit Honig;;herzhaft-süß, klein
+r042;Pasta mit Spinat und Zitronencreme;;weich, zitronig
+r043;Bayerischer Krautsalat mit Kartoffeln;;deftig, traditionell
+r044;Süßkartoffel-Toast mit Avocado;;frühstück/abendbrot
+r045;Linsen-Dal mit Naan;;indisch, aromatisch
+r046;Griechischer Bauernsalat;;Feta, Oliven, Gurke
+r047;Butternut-Kürbis-Suppe;;samtig, leicht
+r048;Polenta mit Pilzragout;;comfort, herzhaft
+r049;Gnocchi mit Tomaten und Rucola;;schnell, lecker
+r050;Rote-Linsen-Salat mit Minze;;frisch, proteinreich
+r051;Auberginen-Röllchen mit Ricotta;;gefüllt, würzig
+r052;Mango-Avocado-Salat;;süß-fruchtig, leicht
+r053;Geröstete Karotten mit Harissa;;pikant, aromatisch
+r054;Kichererbsen-Shakshuka (ohne Fleisch);;würzig, tomatig
+r055;Vegetarische Bánh Mì;;asiatisch-inspiriert
+r056;Rote-Bete-Salat mit Ziegenkäse;;erdig, fein
+r057;Süßkartoffel-Curry mit Spinat;;cremig, mild
+r058;Gerösteter Blumenkohl mit Tahini;;nussig, aromatisch
+r059;Zucchini-Frittata;;schnell, ei-basiert
+r060;Harzer-Käse mit Radieschen und Brot;;regional, leicht
+r061;Kartoffelgratin mit Lauch;;cremig, deftig
+r062;Linsen-Taboulé;;frisch, kräuterreich
+r063;Vegetarische Jambalaya mit Reis;;würzig, sättigend
+r064;Gebackene Tomaten mit Kräuterkruste;;aromatisch, einfach
+r065;Schnelle Erbsensuppe mit Minze;;leicht, grün
+r066;Räucherlachs auf Vollkornbrot;;leicht, delikat
+r067;Hähnchenbrust mit Zitronen-Kapern;;hell, mediterran
+r068;Gegrillte Garnelen mit Knoblauch;;tapas-style
+r069;Schweinefilet mit Senfkruste;;festlich, würzig
+r070;Rindfleisch-Stroganoff;;deftig, sahnig
+r071;Thunfisch-Steak mit Sesamkruste;;asiatisch, kurz gebraten
+r072;Hähnchen-Couscous mit Aprikosen;;süß-herzhaft
+r073;Lammkebab mit Joghurt;;orientalisch, würzig
+r074;Pasta mit Meeresfrüchten;;luftig, salzig
+r075;Gebratener Lachs mit Dill;;zitrus, leicht
+r076;Hühnersuppe mit Miso;;wärmend, klar
+r077;Puten-Wrap mit Salat;;schnell, leicht
+r078;Fischfilet auf Ratatouille;;leicht, mediterran
+r079;Rindfleisch-Bulgogi mit Reis;;koreanisch, aromatisch
+r080;Ceviche mit Limette;;frisch, rohmariniert
+r081;Hähnchen-Tikka mit Joghurt;;indisch-inspiriert
+r082;Gebratene Entenbrust mit Orangensauce;;fein, kräftig
+r083;Spieß mit Lamm und Gemüse;;grillgerecht
+r084;Sardinen auf geröstetem Brot;;umami, simpel
+r085;Garnelen-Pasta mit Chili;;pikant, schnell
+r086;Fisch-Tacos mit Krautsalat;;mexikanisch, frisch
+r087;Kalbschnitzel mit Zitrone;;knusprig, klassisch
+r088;Hähnchen-Paprikagulasch;;deftig, würzig
+r089;Seezungenfilet mit Butter;;zart, buttrig
+r090;Thunfisch-Bulgur-Salat;;leicht, proteinreich
+r091;Rindergeschnetzeltes mit Pilzen;;herzhaft, sahnig
+r092;Gegrillter Oktopus mit Kartoffeln;;mediterran, zäh/saftig
+r093;Hähnchen-Satay mit Erdnusssauce;;asiatisch, aromatisch
+r094;Lachs in Alufolie mit Kräutern;;saftig, einfach
+r095;Pikante Wurstpfanne mit Bohnen;;rustikal, deftig
+r096;Meeresfrüchte-Risotto;;cremig, salzig
+r097;Hühnerkeule mit Rosmarin;;ofengericht, klassisch
+r098;Graupen-Risotto mit Speck;;herzhaft, nussig
+r099;Fischsuppe nach Bouillabaisse;;aromatisch, reichhaltig
+r100;Gefüllte Paprika mit Hackfleisch;;klassisch, warm
+r101;Süßkartoffel-Kichererbsen-Buddha-Bowl;;bunt, nahrhaft
+r102;Pilzrisotto mit Parmesan;;cremig, umami
+r103;Brokkoli-Cheddar-Auflauf;;käseig, sättigend
+r104;Auberginen-Parmesan;;überbacken, herzhaft
+r105;Zitronen-Buttermilch-Pasta;;leicht, frisch
+r106;Vegetarische Paella mit Artischocken;;spanisch, bunt
+r107;Nudelsalat mit Rucola und Pinienkernen;;sommerlich, nussig
+r108;Ofen-Kartoffeln mit Rosmarin und Feta;;knusprig, salzig
+r109;Kichererbsen-Kokos-Suppe;;warmes, cremig
+r110;Panko-Pilze mit Aioli;;knusprig, lecker
+r111;Gemüse-Korma mit Cashew;;mild, indisch
+r112;Gebackene Zucchini mit Parmesan;;leicht, aromatisch
+r113;Quinoa-Bowl mit geröstetem Gemüse;;gesund, sättigend
+r114;Tomaten-Bulgur mit Kräutern;;schnell, frisch
+r115;Ofen-Feta mit Oliven und Tomaten;;einfach, würzig
+r116;Kürbis-Kokos-Suppe mit Koriander;;sämig, duftend
+r117;Gratinierter Chicorée mit Schinken (leicht);;bitter-süß, dezent
+r118;Zucchini-Röllchen mit Ricotta;;gefüllt, fein
+r119;Baked Beans auf Toast mit Spiegelei;;herzhaft, britisch
+r120;Süßkartoffel-Gnocchi mit Salbei;;buttrig, saisonal
+r121;Grüner Spargelsalat mit Zitrus;;frühlingshaft, frisch
+r122;Pilz-Carbonara (mit Ei, ohne Speck);;cremig, vegetarisch
+r123;Rote-Linsen-Bolognese auf Pasta;;fleißig, tomatig
+r124;Pak-Choi mit Knoblauch und Chili;;asiatisch, schnell
+r125;Gerösteter Sellerie mit Walnüssen;;erdig, nussig
+r126;Bunte Gemüse-Quiche;;backen, familiengerecht
+r127;Gebackene Auberginen mit Tahini;;orientalisch, aromatisch
+r128;Mediterraner Reis mit Feta;;einfach, würzig
+r129;Tomaten-Basilikum-Galette;;rustikal, lecker
+r130;Kichererbsen-Pfannkuchen mit Kräuterquark;;proteinreich, anders
+r131;Rosenkohlpfanne mit Speck (kleine Menge);;leicht rauchig
+r132;Pasta alla Norma;;auberginen, tomatig
+r133;Gerösteter Mais-Salat mit Limette;;sommrig, knackig
+r134;Süßkartoffel-Pommes mit Kräuterjoghurt;;Snack, lecker
+r135;Vegetarische Enchiladas mit Bohnen;;mexikanisch, würzig
+r136;Petersilienwurzel-Püree mit Pilzen;;elegant, nussig
+r137;Fenchelgratin mit Zitrone;;leicht, aromatisch
+r138;Kürbis-Lasagne mit Ricotta;;saisonal, cremig
+r139;Rucola-Pasta mit Zitronenöl;;schnell, frisch
+r140;Gebackener Camembert mit Preiselbeeren;;vorspeise, warm
+r141;Sobanudeln mit Tofu und Frühlingszwiebeln;;asiatisch, leicht
+r142;Türkischer Bulgur mit Tomaten;;sättigend, würzig
+r143;Kohlrabi-Salat mit Apfel;;knackig, frisch
+r144;Süßkartoffel-Linsen-Auflauf;;krank, nahrhaft
+r145;Bunte Gemüsepfanne mit Tempeh;;proteinreich, vegan
+r146;Pasta mit Zitrone, Parmesan und Pfeffer;;minimalistisch, aromatisch
+r147;Geröstete Paprika mit Knoblauchcreme;;süß, samtig
+r148;Pilz-Paella mit Safran;;aromatisch, vegetarisch
+r149;Kichererbsen-Salat mit Joghurt-Dressing;;cremig, frisch
+r150;Kräuterpfannkuchen mit Räucherlachs;;leicht, delikat
+r151;Maultaschen mit Kräuterbutter;;deftig, regional
+r152;Kürbis-Risotto mit Walnüssen;;nussig, samtig
+r153;Ziegenkäse-Ravioli mit Rote-Bete-Sauce;;festlich, fein
+r154;Kartoffel-Porree-Gratin;;cremig, klassisch
+r155;Scharfe Tofu-Tacos;;asiatisch-mexikanisch, würzig
+r156;Vegetarische Souvlaki mit Halloumi;;grillgerecht, salzig
+r157;Kürbis-Zwiebel-Tarte;;saisonal, buttrig
+r158;Tomaten-Ricotta-Crostini;;vorspeise, schnell
+r159;Bulgur mit Kräutern und Granatapfel;;fruchtig, frisch
+r160;Rote-Linsen-Kokos-Dal;;indisch, sanft
+r161;Gegrillte Jakobsmuscheln auf Selleriepüree;;fein, delikat
+r162;Scharfe Chorizo-Pfanne mit Bohnen;;pikant, deftig
+r163;Pulled-Pork-Sandwich mit Krautsalat;;saftig, amerikanisch
+r164;Lammkeule mit Rosmarin und Knoblauch;;herzhaft, aromatisch
+r165;Scampi in Knoblauchöl;;tapas, schnell
+r166;Kalbsrücken mit Kräuterkruste;;fein, zart
+r167;Rindertafelspitz mit Meerrettich;;klassisch, deftig
+r168;Hähnchenbrust in Mandelkruste;;knusprig, nussig
+r169;Seezungenfilet Meunière;;buttrig, zart
+r170;Gebratene Entenkeule mit Rotkohl;;festlich, kräftig
+r171;Gegrillte Lammkoteletts mit Minzjoghurt;;orientalisch, aromatisch
+r172;BBQ-Rippchen mit Cole Slaw;;grill, deftig
+r173;Kabeljau mit Tomaten-Oliven-Salsa;;mediterran, leicht
+r174;Rinderroulade mit Rotkohl;;traditionell, reichhaltig
+r175;Jakobsmuschel-Risotto;;luxuriös, cremig
+r176;Hähnchen-Cacciatore;;rustikal, tomatig
+r177;Garnelen-Satay mit Reis;;asiatisch, würzig
+r178;Schweinebauch mit Honigglasur;;knusprig, süß
+r179;Fischkartoffelauflauf;;hausmannskost, praktisch
+r180;Bratwurst mit Sauerkraut;;herzhaft, deftig
+r181;Vegetarische Pho mit Tofu;;vietnamesisch, aromatisch
+r182;Kakao-Kichererbsen-Brownies;;süß, überraschend
+r183;Gegrillte Pfirsiche mit Burrata;;süß-salzig, sommerlich
+r184;Würzige Linsen-Bratlinge;;vegan, proteinreich
+r185;Spinat-Ricotta-Cannelloni;;überbacken, cremig
+r186;Gerösteter Blumenkohl-Couscous;;leicht, nussig
+r187;Süßkartoffel-Eintopf mit Kichererbsen;;warmes, sättigend
+r188;Kartoffel-Zwiebel-Puffer mit Apfelmus;;herzhaft, traditionell
+r189;Tandoori-Lachs mit Joghurtsauce;;indisch, saftig
+r190;Gebratene Entenbrust mit Pflaumensauce;;süß-herb, elegant
+r191;Vegane Bolognese mit Sojahack;;faserig, tomatig
+r192;Maronenrisotto mit Salbei;;saisonal, nussig
+r193;Gebackene Austernpilze mit Zitronenmayonnaise;;knusprig, aromatisch
+r194;Kichererbsen-Caesar-Salat;;cremig, würzig
+r195;Pikante Hähnchenflügel mit Honig;;fingerfood, scharf-süß
+r196;Gebratener Kabeljau mit Fenchelsalat;;frisch, leicht
+r197;Blumenkohl-Steak mit Kräuterkruste;;vegan, kräftig
+r198;Rote-Bete-Gnocchi mit Salbeibutter;;farbenfroh, buttrig
+r199;Gefüllte Zucchini mit Couscous;;klein, würzig
+r200;Walnuss-Pasta mit Gorgonzola;;nussig, cremig
+r201;Tomaten-Zucchini-Gratin;;überbacken, saftig
+r202;Shakshuka mit Feta;;würzig, brunch
+r203;Pasta mit Pilzrahm;;cremig, aromatisch
+r204;Vegane Tacos mit Jackfruit;;mexikanisch, rauchig
+r205;Geröstete Auberginen mit Sumach;;orientalisch, herzhaft
+r206;Mais-Chowder;;cremig, süß
+r207;Linsen-Suppe mit Kürbis;;warmes, nahrhaft
+r208;Mediterraner Linsensalat;;leicht, proteinreich
+r209;Spinat-Käse-Stuffed Peppers;;überbacken, würzig
+r210;Süßkartoffel-Curry mit Kichererbsen;;cremig, aromatisch
+r211;Kalte Nudelsalat mit Sesamdressing;;asiatisch, frisch
+r212;Kürbis-Tacos mit Krautsalat;;saisonal, knackig
+r213;Rucola-Salat mit Birne und Walnüssen;;fruchtig, nussig
+r214;Gebratene Auberginen mit Miso;;umami, asiatisch
+r215;Quinoa mit gerösteten Kürbiswürfeln;;gesund, nahrhaft
+r216;Ofen-Lachs mit Zitronenkruste;;saftig, zitronig
+r217;Hirse-Salat mit Roter Bete;;erdig, frisch
+r218;Ramen mit weichem Ei;;warmes, umami
+r219;Cremige Fenchel-Pasta;;aromatisch, leicht
+r220;Kichererbsen-Patties mit Joghurtsauce;;knusprig, proteinreich
+r221;Ratatouille-Tarte;;rustikal, vegetarisch
+r222;Bunte Reis-Bowl mit Edamame;;gesund, schnell
+r223;Gebratene Jakobsmuscheln mit Limette;;fein, delikat
+r224;Süßkartoffel-Bohnen-Chili;;warmes, sättigend
+r225;Pasta mit Linsenbolognese;;herzhaft, tomatig
+r226;Knusprige Tofu-Nuggets mit Dip;;snack, proteinreich
+r227;Gebackene Birnen mit Blauschimmelkäse;;süß-salzig, elegant
+r228;Couscous-Salat mit getrockneten Tomaten;;würzig, nussig
+r229;Spaghetti Aglio e Olio mit Chili;;minimalistisch, würzig
+r230;Ofen-Rote-Bete mit Ziegenkäse;;erdig, cremig
+r231;Bami Goreng mit Gemüse;;asiatisch, würzig
+r232;Kalte Gurkensuppe mit Dill;;erfrischend, leicht
+r233;Kräuteromelett mit Pilzen;;schnell, sättigend
+r234;Hummus-Bowl mit geröstetem Gemüse;;proteinreich, vielseitig
+r235;Cremiger Polentaauflauf mit Tomaten;;comfort, herzhaft
+r236;Gebratene Lammkoteletts mit Rosmarin;;aromatisch, klassisch
+r237;Mango-Curry mit Basmatireis;;süß-würzig, exotisch
+r238;Gnocchi al Pesto mit Rucola;;basilisch, frisch
+r239;Kartoffel-Lauch-Suppe;;warm, hausgemacht
+r240;Quiche Lorraine mit Salat;;klassisch, deftig
+r241;Vietnamesische Sommerrollen mit Erdnusssauce;;leicht, frisch
+r242;Zucchini-Kichererbsen-Curry;;schnell, aromatisch
+r243;Pasta mit Zitrone und Kapern;;zitronig, leicht
+r244;Karotten-Ingwer-Suppe;;warmes, würzig
+r245;Gebackene Auberginen mit Tomatenkruste;;überbacken, saftig
+r246;Scharfer Rindfleischsalat;;pikant, asiatisch
+r247;Bulgur-Paprika-Pfanne;;sättigend, würzig
+r248;Caponata auf geröstetem Brot;;süß-sauer, intensiv
+r249;Wrap mit Falafel und Salat;;schnell, frisch
+r250;Kürbis-Gnocchi mit Ricotta;;sämig, saisonal
+r251;Minestrone mit Parmesan;;italienisch, vielseitig
+r252;Currysuppe mit Kokosmilch und Garnelen;;cremig, exotisch
+r253;Polenta mit Tomatensugo;;einfach, herzhaft
+r254;Süßkartoffel-Salat mit Feta;;saisonal, frisch
+r255;Geröstete Karotten mit Honig und Thymian;;süß, aromatisch
+r256;Gebratene Austernpilze mit Kräutern;;knusprig, aromatisch
+r257;Pasta mit Spinat und Ricotta;;weich, cremig
+r258;Kichererbsen-Schnitzel mit Zitronenmayonnaise;;knusprig, proteinreich
+r259;Rote-Linsen-Suppe mit Kreuzkümmel;;wärmend, nahrhaft
+r260;Gebackene Forelle mit Kräutern;;zart, leicht
+r261;Mediterrane Gemüsepfanne mit Oliven;;bunt, aromatisch
+r262;Couscous mit Minze und Tomaten;;frisch, leicht
+r263;Cremiger Spargelauflauf;;frühlingshaft, sämig
+r264;Pasta mit Garnelen und Knoblauch;;schnell, kräftig
+r265;Kartoffelsalat mit Senf-Dressing;;klassisch, würzig
+r266;Quinoa-Salat mit schwarzen Bohnen;;proteinreich, gesund
+r267;Tomaten-Fenchel-Gemüse aus dem Ofen;;aromatisch, simpel
+r268;Pilz-Ragout mit Polenta;;erdig, cremig
+r269;Kürbis-Kokos-Curry mit Spinat;;saisonal, exotisch
+r270;Gebackene Süßkartoffel mit Käsefüllung;;comfort, lecker
+r271;Gebratene Gnocchi mit Salbei;;buttrig, knusprig
+r272;Pasta mit gerösteten Paprika;;rauchig, aromatisch
+r273;Linsen-Bratlinge mit Joghurtdip;;vegan, proteinreich
+r274;Sellerie-Apfel-Salat mit Walnüssen;;knackig, frisch
+r275;Scharfe Erdnussnudeln mit Tofu;;asiatisch, cremig
+r276;Gebratene Jakobsmuscheln mit Zitronenbutter;;delikat, fein
+r277;Pilz-Quiche mit Blätterteig;;backen, würzig
+r278;Rindfleisch-Tacos mit Salsa;;mexikanisch, würzig
+r279;Hummus-Sandwich mit geröstetem Gemüse;;schnell, sättigend
+r280;Gemüse-Paella mit Safran;;aromatisch, spanisch
+r281;Kokos-Limetten-Reis mit Gemüse;;exotisch, leicht
+r282;Pasta mit Zitrus-Olivenöl;;minimalistisch, frisch
+r283;Rote-Bete-Hummus mit Pita;;farbe, geschmackvoll
+r284;Gebratenes Gemüse mit Tahini-Dressing;;nussig, aromatisch
+r285;Kürbis-Bohneneintopf;;herzhaft, lecker
+r286;Zucchini-Puffer mit Kräutern;;knusprig, frisch
+r287;Tomaten-Paprika-Sugo mit Oliven;;mediterran, intensiv
+r288;Miso-Ramen mit Gemüse;;umami, nahrhaft
+r289;Cremiger Blumenkohlauflauf;;sämig, comfort
+r290;Süßkartoffel-Kokos-Bowl;;süß, exotisch
+r291;Gebackener Schafskäse mit Thymian;;würzig, einfach
+r292;Pasta mit Kürbis und Ziegenkäse;;saisonal, cremig
+r293;Bunte Buddha-Bowl mit Tahini;;gesund, bunt
+r294;Kartoffelgratin mit Rosmarin;;klassisch, deftig
+r295;Gebratene Hähnchenschenkel mit Paprika;;aromatisch, knusprig
+r296;Tomaten-Mozzarella-Spießchen;;vorspeise, leicht
+r297;Linsen-Salat mit Feta und Kräutern;;proteinreich, frisch
+r298;Kürbis-Kichererbsen-Eintopf;;warmes, sättigend
+r299;Gegrillter Halloumi mit Zitronensauce;;salzig, kräftig
+r300;Sobanudeln mit Gurke und Sesam;;leicht, erfrischend
+r301;Cremiger Kartoffel-Lauch-Auflauf;;comfort, deftig
+r302;Pasta mit Kapern und Sardellen;;salzig, aromatisch
+r303;Rindfleisch-Curry mit Reis;;würzig, sättigend
+r304;Zucchini-Risotto mit Parmesan;;cremig, leicht
+r305;Süßkartoffel-Kichererbsen-Curry;;nahrhaft, aromatisch
+r306;Gebackene Paprika mit Feta-Füllung;;überbacken, herzhaft
+r307;Pasta mit Ricotta und Spinat;;weich, cremig
+r308;Vegetarische Sushi-Bowl;;asiatisch, gesund
+r309;Curry-Linsensalat mit Mango;;süß-würzig, exotisch
+r310;Gebratene Kabeljaufilets mit Zitronenbutter;;zart, frisch
+r311;Kichererbsen-Satay mit Erdnusssauce;;asiatisch, würzig
+r312;Pilz-Pizza mit Rucola;;knusprig, aromatisch
+r313;Reisnudelsuppe mit Gemüse;;leicht, wärmend
+r314;Kartoffel-Kürbis-Eintopf;;herbstlich, sättigend
+r315;Gebackene Birnen mit Honig und Nüssen;;dessert, elegant
+r316;Pasta mit Tomaten und Burrata;;cremig, frisch
+r317;Gebratene Polenta mit Pilzragout;;rustikal, lecker
+r318;Tofu-Sate mit Gurkensalat;;asiatisch, frisch
+r319;Kürbis-Risotto mit Zitrone;;saisonal, frisch
+r320;Gegrillte Zucchini mit Minze;;leicht, sommerlich
+r321;Spaghetti mit Muscheln und Weißwein;;maritim, aromatisch
+r322;Kichererbsen-Linsen-Burger;;proteinreich, herzhaft
+r323;Cremige Tomatensuppe mit Basilikum;;simpel, wärmend
+r324;Pasta mit Erbsen und Schlagsahne;;weich, deftig
+r325;Gerösteter Blumenkohl mit Curry;;würzig, nussig
+r326;Süßkartoffel-Quiche mit Salat;;backen, sättigend
+r327;Kräuter-Risotto mit Zitrone;;frisch, aromatisch
+r328;Fischcurry mit Kokosmilch;;exotisch, aromatisch
+r329;Gebackene Tomaten mit Kräuterfüllung;;aromatisch, simpel
+r330;Pasta mit Zucchini und Kirschtomaten;;leicht, sommerlich
+r331;Rote-Linsen-Bratlinge mit Dip;;vegan, proteinreich
+r332;Pilzstroganoff mit Reis;;cremig, deftig
+r333;Kartoffel-Gemüse-Auflauf;;hausmannskost, praktisch
+r334;Zitronen-Hähnchen mit Rosmarin;;saftig, aromatisch
+r335;Veganes Curry mit Süßkartoffel;;saisonal, nahrhaft
+r336;Pasta mit Butter, Salbei und Parmesan;;buttrig, klassisch
+r337;Ofen-Kürbis mit Thymian und Feta;;saisonal, würzig
+r338;Gebratener Reis mit Gemüse und Ei;;asiatisch, schnell
+r339;Polenta-Bällchen mit Tomatensauce;;knusprig, tomatig
+r340;Kichererbsen-Pfanne mit Spinat;;einfach, nahrhaft
+r341;Scharfe Tomaten-Paprika-Suppe;;pikant, wärmend
+r342;Pasta mit Zucchini-Creme;;cremig, leicht
+r343;Quinoa-Auflauf mit Gemüse;;gesund, sättigend
+r344;Linsensalat mit gerösteten Nüssen;;nussig, proteinreich
+r345;Gebratene Garnelen mit Chili und Knoblauch;;pikant, schnell
+r346;Tomaten-Ricotta-Pasta;;cremig, frisch
+r347;Kürbis-Parmesan-Tarte;;saisonal, buttrig
+r348;Gebratene Auberginen mit Tomaten und Kapern;;würzig, aromatisch
+r349;Soba-Nudelsalat mit Erdnussdressing;;asiatisch, nussig
+r350;Pasta mit Pilzconfit;;umami, intensiv
+r351;Kartoffel-Spinatsalat mit Senf;;frisch, würzig
+r352;Gemüse-Tajine mit Couscous;;orientalisch, aromatisch
+r353;Gebackene Zucchini mit Tomaten;;leicht, sommerlich
+r354;Süßkartoffel-Rösti mit Kräuterquark;;knusprig, lecker
+r355;Pasta mit Kürbis und Speck;;herzhaft, würzig
+r356;Kichererbsen-Curry mit Tomaten;;schnell, aromatisch
+r357;Gebratener Halloumi mit Melone;;süß-salzig, sommerlich
+r358;Zucchini-Linsen-Auflauf;;gesund, deftg
+r359;Pesto-Ravioli mit Pinienkernen;;nussig, frisch
+r360;Quinoa mit Cranberries und Nüssen;;süß, nussig
+r361;Gebratene Entenbrust mit Orangensalsa;;festlich, aromatisch
+r362;Scharfe Gemüsepfanne mit Chili;;pikant, schnell
+r363;Kartoffel-Feta-Auflauf;;cremig, salzig
+r364;Bunte Sushi-Rolle mit Avocado;;asiatisch, frisch
+r365;Pasta mit Spinat und Zwiebeln;;einfach, aromatisch
+r366;Rindfleisch mit Senfkruste und Gemüse;;herzhaft, klassisch
+r367;Ofen-Gemüse mit Kürbis und Zwiebeln;;saisonal, aromatisch
+r368;Kale-Salat mit gerösteten Kichererbsen;;gesund, crunchy
+r369;Pasta mit Lachs und Dill;;zart, aromatisch
+r370;Gebackene Pilze mit Kräuterfüllung;;köstlich, würzig
+r371;Linsen-Gemüse-Eintopf;;warmes, nahrhaft
+r372;Pasta mit Tomaten und Basilikum;;klassisch, simpel
+r373;Kartoffel-Fenchel-Gratin;;aromatisch, deftig
+r374;Gebackene Süßkartoffel mit Feta;;süß-salzig, lecker
+r375;Kichererbsen-Orangen-Salat;;fruchtig, frisch
+r376;Sobanudeln mit Sesamsauce;;asiatisch, nussig
+r377;Pasta mit Pilzen und Marsala;;elegant, aromatisch
+r378;Gegrillte Garnelen mit Zitronen-Knoblauch;;maritim, frisch
+r379;Kürbis-Kokos-Bowl mit Quinoa;;saisonal, nahrhaft
+r380;Tomaten-Paprika-Salat mit Feta;;mediterran, frisch
+r381;Pasta mit Spinat und Pinienkernen;;nussig, cremig
+r382;Süßkartoffel-Erdnuss-Curry;;würzig, exotisch
+r383;Gebratener Tofu mit Teriyaki;;asiatisch, süß-salzig
+r384;Pasta mit Brokkoli und Chili;;kräftig, aromatisch
+r385;Rote-Bete-Ravioli mit Butter;;sämig, elegant
+r386;Kichererbsen-Salat mit Rote Zwiebel;;frisch, aromatisch
+r387;Gefüllte Champignons mit Kräuterkruste;;vorspeise, deftig
+r388;Pasta mit Sardellen und Rucola;;salzig, würzig
+r389;Gebratene Auberginen mit Knoblauch;;aromatisch, intensiv
+r390;Süßkartoffel-Kichererbsen-Bowl;;gesund, bunt
+r391;Pasta mit Erbsen und Minze;;frisch, leicht
+r392;Gegrillte Maiskolben mit Chili-Limetten-Butter;;sommrig, würzig
+r393;Linsenbraten mit Pilzsoße;;festlich, vegetarisch
+r394;Pasta mit Pilzen und Trüffelöl;;luxuriös, aromatisch
+r395;Ofen-Kartoffeln mit Knoblauch und Rosmarin;;knusprig, klassisch
+r396;Kichererbsen-Salat mit Gurke und Minze;;erfrischend, leicht
+r397;Pasta mit Zucchini und Ricotta;;cremig, sommerlich
+r398;Gebratene Pilze mit Knoblauch und Petersilie;;aromatisch, simpel
+r399;Kürbis-Linsen-Curry mit Koriander;;saisonal, würzig
+r400;Pasta mit Tomaten und geröstetem Knoblauch;;rustikal, lecker
+r401;Gegrillte Hähnchenschenkel mit Honig;;gegrillt, süß-würzig
+r402;Schweinebraten mit Knödel;;klassisch, deftig
+r403;Rinderfilet mit Pfeffersoße;;festlich, würzig
+r404;Lachs vom Grill mit Kräutern;;gegrillt, aromatisch
+r405;Garnelen in Knoblauchöl;;tapas, würzig
+r406;Entenbrust mit Orangenjus;;fein, fruchtig
+r407;Kalbsragout mit Pilzen;;cremig, zart
+r408;Hackbraten mit Bratensoße;;hausmannskost, deftig
+r409;Hähnchen-Curry mit Reis;;mild, aromatisch
+r410;Rindfleisch-Tacos al Pastor;;mexikanisch, würzig
+r411;Fischstäbchen mit Kartoffelsalat;;schnell, klassisch
+r412;Rinderrouladen klassisch;;geschmort, herzhaft
+r413;Gebratene Forelle mit Mandeln;;buttrig, zart
+r414;Hühnchen Parmesan;;überbacken, käsig
+r415;Schweinekotelett mit Apfel;;süß-herzhaft, saftig
+r416;Thunfischsteak mit Sesam;;kurzgebraten, nussig
+r417;Lammkeule mit Kräutern;;aromatisch, herzhaft
+r418;Garnelen-Paella mit Chorizo;;spanisch, reichhaltig
+r419;Rippchen BBQ mit Coleslaw;;grill, deftig
+r420;Hähnchen-Satay mit Erdnusssauce;;asiatisch, aromatisch
+r421;Kalbschnitzel Wiener Art;;knusprig, klassisch
+r422;Gegrilltes Lachsfilet mit Dill-Senf;;saftig, aromatisch
+r423;Rindergeschnetzeltes Zürcher Art;;cremig, würzig
+r424;Miesmuscheln in Weißweinsauce;;maritim, aromatisch
+r425;Putenbrust mit Cranberry-Glasur;;festlich, fruchtig
+r426;Lammkoteletts mit Minzjoghurt;;grill, orientalisch
+r427;Schweinefilet im Speckmantel;;saftig, rauchig
+r428;Kabeljau in Tomatensauce;;mediterran, leicht
+r429;Hähnchen Fajitas;;mexikanisch, würzig
+r430;Rinder-Bulgogi mit Reis;;koreanisch, aromatisch
+r431;Garnelen-Tacos mit Mango;;frisch, fruchtig
+r432;Entenconfit mit Kartoffeln;;knusprig, würzig
+r433;Hackfleisch-Pfanne mit Paprika;;schnell, rustikal
+r434;Seeteufelmedaillons mit Sauce;;zart, delikat
+r435;Hähnchen mit Pilzrahm;;cremig, aromatisch
+r436;Lachs en Papillote;;saftig, schonend
+r437;Rindfleisch-Bourguignon;;geschmort, herzhaft
+r438;Puten-Gyros mit Tzatziki;;grill, würzig
+r439;Krustenbraten mit Sauerkraut;;deftig, klassisch
+r440;Gebackene Jakobsmuscheln auf Risotto;;fein, delikat
+r441;Rindercarpaccio mit Rucola;;leicht, elegant
+r442;Hähnchen-Korma mit Naan;;indisch, mild
+r443;Schweinebauch asiatisch glasiert;;knusprig, süß
+r444;Lamm-Tajine mit Aprikosen;;orientalisch, aromatisch
+r445;Fischcurry mit Kokos und Garnelen;;exotisch, cremig
+r446;Rindersteak mit Knoblauchbutter;;saftig, kräftig
+r447;Hähnchen Marbella;;sonnig, mediterran
+r448;Gebackener Schinken mit Honigkruste;;festlich, süß
+r449;Bratwurst mit Sauerkraut und Senf;;würzig, deftig
+r450;Lachs-Bagel mit Frischkäse;;schnell, frisch
+r451;Rindfleisch-Chili con Carne;;pikant, sättigend
+r452;Hähnchen Caesar Salad mit Croutons;;salat, klassisch
+r453;Schweinegeschnetzeltes mit Champignons;;cremig, würzig
+r454;Meeräsche gegrillt mit Zitronenbutter;;maritim, leicht
+r455;Hähnchen mit süß-saurer Sauce;;asiatisch, fruchtig
+r456;Gegrillte Garnelen-Spieße;;tapas, frisch
+r457;Kalbsbraten mit Gemüse;;zart, klassisch
+r458;Rindfleisch-Pho mit Kräutern;;vietnamesisch, aromatisch
+r459;Lamm-Burger mit Feta;;grill, würzig
+r460;Hähnchen-Souvlaki mit Zitrone;;mediterran, frisch
+r461;Gebratene Ente mit Hoisin;;asiatisch, intensiv
+r462;Fischfrikadellen mit Remoulade;;hausgemacht, knusprig
+r463;Rindertatar mit Toast;;roh, elegant
+r464;Gefüllte Hähnchenbrust mit Spinat und Käse;;gefüllt, saftig
+r465;Spanische Chorizo-Pfanne;;pikant, würzig
+r466;Lachs-Risotto mit Erbsen;;cremig, delikat
+r467;Hähnchen Cordon Bleu;;gefüllt, goldbraun
+r468;Schweinefilet mit Pflaumen;;süß-herzhaft, zart
+r469;Rinderbraten mit Wurzelgemüse;;geschmort, herzhaft
+r470;Hummer-Spaghetti;;luxuriös, delikat
+r471;Gegrillter Oktopus mit Paprika;;mediterran, aromatisch
+r472;Hähnchen-Piccata mit Kapern;;zitronig, pikant
+r473;Kalbsleber Berliner Art;;traditionell, würzig
+r474;Lachs-Terrine mit Dill;;kalt, fein
+r475;Rindfleisch-Kebabs mit Zwiebeln;;grill, würzig
+r476;Hähnchen Tandoori mit Joghurt;;indisch, aromatisch
+r477;Schweine-Ragout mit Senf;;rustikal, herzhaft
+r478;Fischauflauf mit Kruste;;überbacken, saftig
+r479;Rinderkebab mit Joghurtsauce;;orientalisch, aromatisch
+r480;Hähnchen-Nuggets hausgemacht;;snack, knusprig
+r481;Lammcurry mit Joghurt;;scharf, aromatisch
+r482;Gegrillte Sardinen mit Meersalz;;einfach, maritim
+r483;Rinderfilet Stroganoff;;cremig, herzhaft
+r484;Putenroulade mit Spinatfüllung;;gefüllt, klassisch
+r485;Gambas al Ajillo;;knoblauch, tapas
+r486;Schweinebauch mit Pflaumenweinsauce;;fein, süß
+r487;Rinderbraten mit Rotweinsoße;;festlich, aromatisch
+r488;Hähnchen-Paprika-Pfanne;;schnell, würzig
+r489;Jakobsmuscheln auf Blumenkohlpüree;;delikat, elegant
+r490;Iberico-Koteletts mit Knoblauch;;kräftig, aromatisch
+r491;Thai-Rindsalat mit Limette;;frisch, scharf
+r492;Lammragout mit Kichererbsen;;orientalisch, herzhaft
+r493;Hähnchen-Marsala;;pilzig, aromatisch
+r494;Gegrillter Tunfisch mit Sesamsauce;;saftig, nussig
+r495;Rinderhack-Pfanne mit Mais;;schnell, deftig
+r496;Hähnchen-Lauch-Pfanne;;schnell, herzhaft
+r497;Gänsebraten mit Apfelrotkohl;;festlich, traditionell
+r498;Zanderfilet mit Kräuterkruste;;zart, aromatisch
+r499;Rinderfilet mit Gorgonzola-Sauce;;fein, kräftig
+r500;Meeresfrüchte-Platte mit Zitronenbutter;;festlich, frisch

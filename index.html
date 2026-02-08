@@ -83,6 +83,21 @@
       font-weight: 600
     }
 
+    /* Invert Add and Random button colors: Add = outlined, Random = filled */
+    #btn-add {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+    #btn-add:hover { background: rgba(41,163,163,0.04); }
+
+    #btn-random {
+      background: var(--accent);
+      color: white;
+      border: 0;
+    }
+    #btn-random:hover { opacity: 0.95; }
+
     .secondary {
       background: transparent;
       color: var(--accent);
@@ -130,7 +145,7 @@
       margin-bottom: 14px
     }
 
-    .left-pane { flex: 0 0 50%; display:flex; flex-direction:column; height:100%; }
+    .left-pane { flex: 0 0 50%; display:flex; flex-direction:column; /* make search pane sticky so controls don't move */ position:sticky; top:20px; align-self:flex-start; max-height: calc(100vh - 100px); }
     .right-pane { flex: 1 1 auto; display:flex; flex-direction:column; }
     .list {
       display: flex;
@@ -220,7 +235,7 @@
     .toast-container { position: fixed; top: 12px; right: 12px; display:flex; flex-direction:column; gap:8px; z-index:900 }
     .toast { background:#222; color:#fff; padding:8px 12px; border-radius:8px; opacity:.95 }
     .confirm-modal { position: fixed; inset: 0; display:none; align-items:center; justify-content:center; background: rgba(2,6,23,.35); z-index:910 }
-    .confirm-modal .sheet { width:420px; padding:14px }
+    .confirm-modal .sheet { background: var(--card); width:420px; padding:14px; border-radius:12px; box-shadow:var(--shadow); }
     /* ensure modal inputs have right margin and use border-box sizing */
     .modal .sheet input,
     .modal .sheet textarea,
@@ -266,7 +281,7 @@
         flex-wrap: wrap
       }
       /* mobile reorder: Random pane above List pane */
-      .left-pane { order: 2; width: 100%; }
+      .left-pane { order: 2; width: 100%; position:static; max-height:none; }
       .right-pane { order: 1; width: 100%; }
       /* ensure the two main panes stack vertically (column) when the layout is narrow */
       .app > section { flex-direction: column; align-items: stretch; }
@@ -275,6 +290,7 @@
     /* icon & search helpers */
     .icon { width:16px; height:16px; display:inline-block; vertical-align:middle; fill:currentColor }
     .icon-button { display:inline-flex; align-items:center; justify-content:center; padding:0 6px; height:30px; border-radius:8px; background:transparent; border:1px solid rgba(41,163,163,.08); cursor:pointer }
+    .result .icon-button.top-right { position: absolute; top: 12px; right: 12px; }
     .search-input { padding:6px 8px; border-radius:8px; border:1px solid #e6eefc; width:100%; max-width:none }
     .search-controls { display:flex; gap:6px; align-items:center; flex:1 1 100%; width:100%; }
   </style>
@@ -342,6 +358,17 @@
           </aside>
         </div>
 
+        <!-- Ideen der KI: framed result area with centered headline and top-right refresh button -->
+        <aside class="result" id="ai-recommend" style="position:relative;margin-top:10px;padding:0">
+          <button id="btn-ai-recommend" class="secondary icon-button top-right" title="Aktualisieren" aria-label="Aktualisieren" style="color:#29a3a3;position:absolute;top:12px;right:12px;z-index:20;">
+            <svg class="icon"><use href="#icon-refresh"></use></svg>
+          </button>
+          <div style="position:relative">
+            <h4 style="margin:12px 0 20px 0;text-align:center;">Ideen der KI</h4>
+          </div>
+          <div id="ai-recommend-content" style="margin:0;padding:12px;min-height:25px;display:none"></div>
+        </aside>
+
 
       </div>
     </section>
@@ -355,6 +382,7 @@
       <div style="display:flex;gap:4px;align-items:center">
         <button id="footer-export" class="secondary">Exportieren</button>
         <button id="footer-import" class="secondary">Importieren</button>
+        <button id="footer-restore" class="secondary">Wiederherstellen</button>
         <button id="footer-help" class="secondary">Hilfe</button>
         <button id="footer-github" class="secondary icon-button" aria-label="GitHub" title="GitHub"> <svg class="icon"><use href="#icon-github"></use></svg> </button>
       </div>
@@ -376,8 +404,12 @@
             <li><strong>Automatisch umbenennen</strong>: bei ID-Konflikten importierte Elemente umbenennen (Suffix).</li>
           </ul>
           <p>Bei ungültiger Datei wird der Import abgebrochen und eine Fehlermeldung angezeigt.</p>
+          <hr />
+          <h4 style="margin:8px 0 4px">Wiederherstellen</h4>
+          <p>Die Schaltfläche <strong>Wiederherstellen</strong> im Footer setzt alle ausgeblendeten (soft-deleted) Basis-Elemente zurück und macht sie wieder sichtbar.</p>
         </div>
-        <div style="display:flex;justify-content:flex-end;margin-top:12px"><button id="help-close" class="secondary">Schließen</button></div>
+        <div style="margin-top:12px;color:var(--muted);font-size:12px">MIT License — Copyright (c) 2026 Oliver Aldrian.</div>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px"><button id="help-close" class="secondary">Schließen</button></div>
       </div>
     </div>
 
@@ -459,8 +491,13 @@
           // respect soft-delete flag on overrides: skip builtin when deleted
           if (ov && ov.deleted === true) continue;
           const merged = ov ? Object.assign({}, b, ov) : Object.assign({}, b);
-          // shallow-merge attributes so overrides only replace provided keys
-          merged.attributes = Object.assign({}, b.attributes || {}, (ov && ov.attributes) || {});
+          // If override provides an attributes property, treat it as a replacement
+          // (so an empty object removes all builtin attributes). Otherwise inherit builtin attributes.
+          if (ov && ov.hasOwnProperty('attributes')) {
+            merged.attributes = Object.assign({}, ov.attributes || {});
+          } else {
+            merged.attributes = Object.assign({}, b.attributes || {});
+          }
           // note: allow override to replace note, otherwise inherit builtin note
           merged.note = (ov && ov.note !== undefined) ? ov.note : (b.note || '');
           merged.meta = { source: ov ? 'Überschrieben' : 'Eingebaut' };
@@ -612,14 +649,15 @@
 
         // show builtin + local counts
         const builtinCountEl = document.getElementById('builtin-count'); const localCountEl = document.getElementById('local-count'); const resultCountEl = document.getElementById('result-count');
-        if (builtinCountEl) builtinCountEl.textContent = `${builtinItems.length} basis`;
+        // compute visible builtin count (exclude soft-deleted via overrides)
+        const visibleBuiltinCount = (builtinItems || []).filter(b => !(state.itemsOverrides && state.itemsOverrides[b.id] && state.itemsOverrides[b.id].deleted)).length;
+        if (builtinCountEl) builtinCountEl.textContent = `${visibleBuiltinCount} basis`;
         if (localCountEl) localCountEl.textContent = `${state.itemsLocal.length} lokal`;
 
         // list-specific filtering
         const filtered = getFilteredItems(state.effectiveItems, state.listFilters);
         state.lastFiltered = filtered;
         if (resultCountEl) resultCountEl.textContent = `${filtered.length} / ${state.effectiveItems.length} angezeigt`;
-        if (filtered.length === 0) { const no = document.createElement('div'); no.className = 'card'; no.textContent = 'Keine Elemente entsprechen den Filtern.'; list.appendChild(no); }
 
         // apply sort and optional render limit (virtualization/load more)
         filtered.sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')));
@@ -635,8 +673,10 @@
 
           // hidden details: rating + attributes
           const details = document.createElement('div'); details.className = 'details';
-          const rating = document.createElement('div'); rating.className = 'meta'; rating.textContent = (it.rating ? 'Bewertung: ' + it.rating : ''); details.appendChild(rating);
+          // attributes first
           if (it.attributes) { const attrRow = document.createElement('div'); attrRow.style.marginTop = '6px'; for (const k in it.attributes) { const span = document.createElement('span'); span.className = 'attr-badge'; span.textContent = `${k}: ${it.attributes[k]}`; attrRow.appendChild(span); } details.appendChild(attrRow); }
+          // rating last
+          const rating = document.createElement('div'); rating.className = 'meta'; rating.textContent = (it.rating ? 'Bewertung: ' + it.rating : ''); details.appendChild(rating);
           left.appendChild(details);
 
           const right = document.createElement('div'); card.appendChild(left); card.appendChild(right);
@@ -656,13 +696,34 @@
         const appFooter = document.getElementById('app-footer');
         if (appFooter) {
           const fBuiltin = document.getElementById('footer-builtin-count'); const fLocal = document.getElementById('footer-local-count'); const fResult = document.getElementById('footer-result-count');
-          if (fBuiltin) fBuiltin.textContent = `${builtinItems.length} basis`;
+          // footer shows number of visible builtin items (respect soft-delete overrides)
+          const visibleFooterBuiltin = (builtinItems || []).filter(b => !(state.itemsOverrides && state.itemsOverrides[b.id] && state.itemsOverrides[b.id].deleted)).length;
+          if (fBuiltin) fBuiltin.textContent = `${visibleFooterBuiltin} basis`;
           if (fLocal) fLocal.textContent = `${state.itemsLocal.length} lokal`;
           if (fResult) fResult.textContent = `${filtered.length} / ${state.effectiveItems.length} angezeigt`;
           // wire footer export/import to perform actions directly
           const fExport = document.getElementById('footer-export'); const fImport = document.getElementById('footer-import');
           if (fExport) fExport.onclick = () => { doExport(); };
           if (fImport) fImport.onclick = () => { const fi = document.getElementById('list-import-file'); if (fi) fi.click(); };
+          const fRestore = document.getElementById('footer-restore');
+          if (fRestore) fRestore.onclick = async () => {
+            const ok = await showConfirm('Alle ausgeblendeten Basis-Elemente wiederherstellen?');
+            if (!ok) return;
+            let restored = 0;
+            if (!state.itemsOverrides) state.itemsOverrides = {};
+            for (const id of Object.keys(state.itemsOverrides)) {
+              const ov = state.itemsOverrides[id];
+              if (ov && ov.deleted) {
+                delete ov.deleted;
+                restored++;
+                // if override is now empty object, remove it
+                if (Object.keys(ov).length === 0) delete state.itemsOverrides[id];
+              }
+            }
+            saveOverrides(state.itemsOverrides);
+            renderList();
+            showToast(`Wiederhergestellt: ${restored}`);
+          };
         }
         // show empty state message
         if (filtered.length === 0) { const no = document.createElement('div'); no.className = 'card'; no.textContent = 'Keine Elemente entsprechen den Filtern.'; list.appendChild(no); }
@@ -726,18 +787,29 @@
       function addAttrRow(key = '', value = '') { const rows = document.getElementById('attr-rows'); const wrap = document.createElement('div'); wrap.style.display = 'flex'; wrap.style.gap = '6px'; wrap.style.marginTop = '6px'; const k = document.createElement('input'); k.placeholder = 'Schlüssel'; k.value = key; k.style.flex = '1'; const v = document.createElement('input'); v.placeholder = 'Wert'; v.value = value; v.style.flex = '1'; const rem = document.createElement('button'); rem.type = 'button'; rem.textContent = '✕'; rem.title = 'Entfernen'; rem.className = 'secondary'; rem.addEventListener('click', () => { rows.removeChild(wrap); validateAttrKeys(); }); k.addEventListener('input', validateAttrKeys); wrap.appendChild(k); wrap.appendChild(v); wrap.appendChild(rem); rows.appendChild(wrap); validateAttrKeys(); }
       document.getElementById('add-attr').addEventListener('click', () => addAttrRow());
       function openModalForNew() { clearModal(); document.getElementById('modal-title').textContent = 'Element hinzufügen'; openModal(document.getElementById('modal')); }
+      function openModalPrefill(item) {
+        clearModal();
+        document.getElementById('modal-title').textContent = 'Element hinzufügen';
+        const form = document.getElementById('item-form');
+        form.name.value = item.name || '';
+        form.rating.value = item.rating || '';
+        form.note.value = item.note || '';
+        // populate attributes if present
+        if (item.attributes) { for (const k in item.attributes) addAttrRow(k, item.attributes[k]); }
+        editing.id = null; editing.type = 'Lokal';
+        openModal(document.getElementById('modal'));
+        form.name.focus();
+      }
       function openModalForEdit(item) { clearModal(); document.getElementById('modal-title').textContent = (item.meta && item.meta.source === 'Eingebaut') ? 'Bearbeiten (Überschreiben)' : 'Element bearbeiten'; const form = document.getElementById('item-form'); form.name.value = item.name || ''; form.rating.value = item.rating || ''; if (item.attributes) { for (const k in item.attributes) addAttrRow(k, item.attributes[k]); } editing.id = item.id; editing.type = item.meta && item.meta.source ? item.meta.source : 'Lokal'; // if editing a builtin, add attribute-merge option
-        if (editing.type === 'Eingebaut'){
-          const sheet = document.getElementById('modal-sheet'); const mergeRow = document.createElement('div'); mergeRow.id = 'attr-merge-row'; mergeRow.style.marginTop='8px'; mergeRow.innerHTML = `<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" name="replaceAttributes" /> Attribute ersetzen (ansonsten nur gegebene Attribute überschreiben)</label>`; sheet.insertBefore(mergeRow, sheet.querySelector('#attr-rows'));
-        }
+        // No merge checkbox: builtin edits always replace attributes (previous behavior was optional)
         openModal(document.getElementById('modal'));
         document.getElementById('item-form').name.focus(); }
 
       document.getElementById('item-form').addEventListener('submit', (ev) => {
         ev.preventDefault(); const form = ev.target; const name = form.name.value.trim(); const rating = form.rating.value ? parseInt(form.rating.value, 10) : undefined; const rows = document.getElementById('attr-rows'); const attrs = {}; Array.from(rows.children).forEach(r => { const k = r.children[0].value.trim(); const v = r.children[1].value.trim(); if (k) attrs[k] = v; }); if (editing.id) { if (editing.type === 'Lokal') { const idx = state.itemsLocal.findIndex(x => x.id === editing.id); if (idx >= 0) { state.itemsLocal[idx] = Object.assign({}, state.itemsLocal[idx], { name, rating, attributes: attrs }); saveLocal(state.itemsLocal); } } else { // builtin override: support attribute replace vs merge
-            const replaceAttr = form.replaceAttributes && form.replaceAttributes.checked;
+            // Always replace builtin attributes with the values provided in the form
             const base = (builtinItems || []).find(b=>b.id===editing.id) || {};
-            const overrideAttrs = replaceAttr ? attrs : Object.assign({}, base.attributes || {}, attrs);
+            const overrideAttrs = attrs; // replace, do not merge
             const override = { name, rating, attributes: overrideAttrs };
             state.itemsOverrides[editing.id] = override; saveOverrides(state.itemsOverrides);
           } } else { const id = generateId(); const item = { id, name, rating, attributes: attrs }; state.itemsLocal.push(item); saveLocal(state.itemsLocal); }
@@ -750,8 +822,23 @@
       document.getElementById('btn-random').addEventListener('click', () => {
         const arr = getFilteredItems(state.effectiveItems || [], state.randomFilters || {});
         if (!arr || arr.length === 0) { showToast('Keine Elemente zur Auswahl. Filter anpassen oder Elemente hinzufügen.'); return; }
-        const pick = arr[Math.floor(Math.random() * arr.length)]; const rc = document.getElementById('result-content'); rc.innerHTML = `<div><strong>${escapeHtml(pick.name)}</strong><div class="meta">Bewertung:${pick.rating || '—'}</div>${pick.note ? '<div style="margin-top:6px">' + escapeHtml(pick.note) + '</div>' : ''}</div>`;
+        const pick = arr[Math.floor(Math.random() * arr.length)];
+        const rc = document.getElementById('result-content');
+        // build result: Name, Note, Attributes, Rating
+        let html = `<div><strong>${escapeHtml(pick.name)}</strong>`;
+        if (pick.note) html += `<div style="margin-top:6px">${escapeHtml(pick.note)}</div>`;
+        if (pick.attributes) {
+          html += '<div style="margin-top:6px">';
+          for (const k in pick.attributes) {
+            html += `<span class="attr-badge">${escapeHtml(k)}: ${escapeHtml(pick.attributes[k])}</span>`;
+          }
+          html += '</div>';
+        }
+        html += `<div class="meta" style="margin-top:6px">Bewertung: ${pick.rating || '—'}</div>`;
+        html += '</div>';
+        rc.innerHTML = html;
       });
+
 
       // header export/import moved to footer: provide reusable export function and guarded bindings
       function doExport() {
@@ -871,17 +958,19 @@
             row.style.gap = '12px';
             // detach button from previous parent
             if (br.parentNode) br.parentNode.removeChild(br);
-            // replace resultContent with row, then append content and button
+            // replace resultContent with row, then append content and position button absolutely
             resultBox.replaceChild(row, resultContent);
+            // ensure resultBox is a positioned container for absolute button placement
+            resultBox.style.position = 'relative';
             // ensure the result content stays centered
             resultContent.style.flex = '1';
             resultContent.style.display = 'flex';
             resultContent.style.justifyContent = 'center';
             row.appendChild(resultContent);
-            const right = document.createElement('div'); right.style.display = 'flex'; right.style.alignItems = 'center'; right.appendChild(br);
-            // keep right container tight to its content
-            right.style.flex = '0 0 auto';
-            row.appendChild(right);
+            // position the Random button using the shared helper class so it matches the AI button
+            if (br && br.classList) { br.classList.add('top-right'); }
+            // ensure the result container is positioned (done above) and append the button
+            resultBox.appendChild(br);
           }
         } catch (e) { /* ignore */ }
         // wire footer help button
@@ -889,6 +978,65 @@
         const hc = document.getElementById('help-close'); if (hc) hc.addEventListener('click', ()=>{ closeModal(document.getElementById('help-modal')); });
         // wire footer github button
         const fgh = document.getElementById('footer-github'); if (fgh) fgh.addEventListener('click', ()=>{ try{ window.open('https://github.com/oaldrian/computer-what-should-i-eat','_blank','noopener'); } catch(e){ location.href='https://github.com/oaldrian/computer-what-should-i-eat'; } });
+        // prepare recommendation list (for Ideen der KI)
+        window.__picker.recommendations = [];
+        async function loadRecommendations() {
+          if (window.__picker.recommendations && window.__picker.recommendations.length) return window.__picker.recommendations;
+          try {
+            const r = await fetch('recommendation.json', { cache: 'no-store' });
+            if (!r.ok) return [];
+            const j = await r.json();
+            window.__picker.recommendations = Array.isArray(j) ? j : [];
+            return window.__picker.recommendations;
+          } catch (e) { return []; }
+        }
+        function renderRecommendationItem(it) {
+          const out = document.getElementById('ai-recommend-content'); if (!out) return;
+          out.style.display = 'block';
+          out.innerHTML = '';
+          // render name and note inline without a highlighted card (outer frame is enough)
+          const row = document.createElement('div');
+          row.style.display = 'flex';
+          row.style.alignItems = 'center';
+          row.style.justifyContent = 'center';
+          row.style.gap = '10px';
+          row.style.position = 'relative';
+          row.style.width = '100%';
+          // centered content (name + note)
+          const center = document.createElement('div');
+          center.style.textAlign = 'center';
+          const name = document.createElement('div'); name.style.fontWeight = '600'; name.textContent = it.name || '';
+          const note = document.createElement('div'); note.style.color = 'var(--muted)'; note.style.fontSize = '13px'; note.textContent = it.note || '';
+          center.appendChild(name);
+          if (it.note) center.appendChild(note);
+          // keep the centered block from spanning under the right button
+          center.style.margin = '0 auto';
+          center.style.maxWidth = 'calc(100% - 64px)';
+          row.appendChild(center);
+          // add a plus button to add this recommendation as a new local item (prefilled)
+          const addBtn = createIconButton('icon-plus', 'Hinzufügen', (ev) => { ev.stopPropagation(); openModalPrefill(it); });
+          addBtn.id = 'btn-ai-add';
+          addBtn.style.position = 'absolute';
+          addBtn.style.right = '12px';
+          addBtn.style.top = '50%';
+          addBtn.style.transform = 'translateY(-50%)';
+          addBtn.style.zIndex = 20;
+          // ensure the content container is the positioning context so the button aligns with the line
+          out.style.position = 'relative';
+          // remove any previous add button and append into the content area
+          const prev = out.querySelector('#btn-ai-add'); if (prev) prev.remove();
+          out.appendChild(addBtn);
+          out.appendChild(row);
+        }
+        const aiBtn = document.getElementById('btn-ai-recommend'); if (aiBtn) aiBtn.addEventListener('click', async () => {
+          aiBtn.disabled = true;
+          const recs = await loadRecommendations();
+          const out = document.getElementById('ai-recommend-content');
+          if (!recs || recs.length === 0) { if (out) { out.style.display = 'block'; out.innerHTML = '<div style="text-align:center;color:var(--muted)">Keine Empfehlungen gefunden.</div>'; } aiBtn.disabled = false; return; }
+          const pick = recs[Math.floor(Math.random() * recs.length)];
+          renderRecommendationItem(pick);
+          aiBtn.disabled = false;
+        });
       })();
 
       // enhanced test runner for merge & filter logic

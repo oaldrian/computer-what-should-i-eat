@@ -58,3 +58,7 @@ License
 
 - This project is provided as-is under the repository license.
 
+Data note
+
+- I AI generated `data/recommended.csv` (and the JSON export `recommendation.json`) containing 400 recommendation entries used by the "Ideen der KI" feature.
+
