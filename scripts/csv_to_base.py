@@ -64,8 +64,20 @@ def parse_row(row: dict) -> dict:
 
 def csv_to_json(inpath: Path, outpath: Path):
     items = []
-    with inpath.open(newline='', encoding='utf-8') as fh:
-        reader = csv.DictReader(fh)
+    # open with 'utf-8-sig' to remove possible BOM and require semicolon delimiter
+    with inpath.open(newline='', encoding='utf-8-sig') as fh:
+        # read a sample to detect delimiter; require ';' explicitly
+        sample = fh.read(4096)
+        fh.seek(0)
+        try:
+            sniff = csv.Sniffer().sniff(sample)
+            detected = sniff.delimiter
+        except Exception:
+            detected = None
+        if detected and detected != ';':
+            print(f"ERROR: detected delimiter '{detected}' in CSV — this tool only accepts ';' separated files")
+            raise SystemExit(2)
+        reader = csv.DictReader(fh, delimiter=';')
         for r in reader:
             # skip completely empty rows
             if not any((v or '').strip() for v in r.values()):

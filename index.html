@@ -42,8 +42,12 @@
 
     .app {
       max-width: 97vw;
-      margin: 28px auto;
-      padding: 20px
+      margin: 16px auto;
+      padding: 20px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 72px; /* reserve space for fixed footer */
     }
 
     header {
@@ -68,8 +72,13 @@
       background: var(--accent);
       color: white;
       border: 0;
-      padding: 8px 12px;
+      height: 30px;
+      padding: 0 8px;
       border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
       cursor: pointer;
       font-weight: 600
     }
@@ -78,7 +87,11 @@
       background: transparent;
       color: var(--accent);
       border: 1px solid rgba(41, 163, 163, .12);
-      padding: 6px 10px
+      height: 30px;
+      padding: 0 8px;
+      display: inline-flex;
+      align-items: center;
+      font-size: 13px;
     }
 
     .filters {
@@ -117,10 +130,15 @@
       margin-bottom: 14px
     }
 
+    .left-pane { flex: 0 0 50%; display:flex; flex-direction:column; height:100%; }
+    .right-pane { flex: 1 1 auto; display:flex; flex-direction:column; }
     .list {
       display: flex;
       flex-direction: column;
       gap: 6px;
+      overflow: auto;
+      flex: 1 1 auto;
+      padding-right: 6px;
     }
 
     .card {
@@ -198,6 +216,11 @@
       border-radius: 12px;
       box-shadow: var(--shadow)
     }
+    /* simple toast / confirm styles */
+    .toast-container { position: fixed; top: 12px; right: 12px; display:flex; flex-direction:column; gap:8px; z-index:900 }
+    .toast { background:#222; color:#fff; padding:8px 12px; border-radius:8px; opacity:.95 }
+    .confirm-modal { position: fixed; inset: 0; display:none; align-items:center; justify-content:center; background: rgba(2,6,23,.35); z-index:910 }
+    .confirm-modal .sheet { width:420px; padding:14px }
     /* ensure modal inputs have right margin and use border-box sizing */
     .modal .sheet input,
     .modal .sheet textarea,
@@ -242,10 +265,16 @@
       .controls {
         flex-wrap: wrap
       }
+      /* mobile reorder: Random pane above List pane */
+      .left-pane { order: 2; width: 100%; }
+      .right-pane { order: 1; width: 100%; }
+      /* ensure the two main panes stack vertically (column) when the layout is narrow */
+      .app > section { flex-direction: column; align-items: stretch; }
+      .app { padding-bottom: 92px; }
     }
     /* icon & search helpers */
     .icon { width:16px; height:16px; display:inline-block; vertical-align:middle; fill:currentColor }
-    .icon-button { display:inline-flex; align-items:center; justify-content:center; padding:6px; border-radius:8px; background:transparent; border:1px solid rgba(41,163,163,.08); cursor:pointer }
+    .icon-button { display:inline-flex; align-items:center; justify-content:center; padding:0 6px; height:30px; border-radius:8px; background:transparent; border:1px solid rgba(41,163,163,.08); cursor:pointer }
     .search-input { padding:6px 8px; border-radius:8px; border:1px solid #e6eefc; width:100%; max-width:none }
     .search-controls { display:flex; gap:6px; align-items:center; flex:1 1 100%; width:100%; }
   </style>
@@ -265,26 +294,20 @@
       <path d="M3.51 9a9 9 0 0 1 14.35-3.36L23 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
       <path d="M20.49 15a9 9 0 0 1-14.35 3.36L1 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
     </symbol>
+    <symbol id="icon-github" viewBox="0 0 24 24"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.09 3.29 9.4 7.86 10.93.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.53-1.35-1.3-1.71-1.3-1.71-1.06-.73.08-.72.08-.72 1.17.08 1.79 1.2 1.79 1.2 1.04 1.78 2.72 1.27 3.38.97.11-.76.41-1.27.75-1.56-2.56-.29-5.25-1.28-5.25-5.72 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11.03 11.03 0 0 1 2.9-.39c.98 0 1.97.13 2.9.39 2.2-1.5 3.17-1.18 3.17-1.18.63 1.58.23 2.75.11 3.04.74.81 1.19 1.84 1.19 3.1 0 4.45-2.69 5.43-5.25 5.72.42.36.8 1.08.8 2.18 0 1.58-.01 2.86-.01 3.25 0 .31.21.68.8.56C20.71 21.4 24 17.09 24 12c0-6.35-5.15-11.5-12-11.5z" fill="currentColor"/></symbol>
   </svg>
   <div class="app" id="app">
 
 
     <section style="display:flex;gap:12px;align-items:flex-start">
-      <div style="flex:0 0 50%">
+      <div class="left-pane">
         <div id="list-controls" style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
-          <div id="builtin-counts" style="font-size:13px;color:var(--muted)">
-            <span id="builtin-count"></span>
-            <span id="local-count" style="margin-left:8px;color:var(--muted)"></span>
-          </div>
             <div class="search-controls">
               <input id="search-input" class="search-input" placeholder="Suche..." />
               <button id="search-clear" class="secondary" title="Suche löschen">✕</button>
-              <button id="search-info" class="secondary" title="Suche: Teile mit Leerzeichen trennen; attribut:wert für gezielte Suche; '*' als Wildcard"><svg class="icon"><use href="#icon-question"></use></svg></button>
             </div>
           <div style="margin-left:auto">
-            <button id="btn-add">Hinzufügen</button>
-            <button id="list-export" class="secondary">Exportieren</button>
-            <button id="list-import" class="secondary">Importieren</button>
+            <button id="btn-add" style="margin-right:6px">Hinzufügen</button>
             <input id="list-import-file" type="file" accept="application/json" style="display:none" />
           </div>
         </div>
@@ -294,9 +317,10 @@
         <section class="list" id="list" aria-live="polite">
           <!-- item cards -->
         </section>
+        <div id="list-sentinel" style="height:1px;display:none"></div>
       </div>
 
-      <div style="flex:1">
+      <div class="right-pane">
         <header>
           <h1>Computer, Was soll ich essen?</h1>
           
@@ -321,6 +345,41 @@
 
       </div>
     </section>
+
+    <footer id="app-footer" style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;position:fixed;left:12px;right:12px;bottom:12px;background:var(--card);border-radius:10px;box-shadow:0 -6px 20px rgba(2,6,23,.06);z-index:760">
+      <div style="display:flex;gap:4px;align-items:center;color:var(--muted);font-size:13px">
+        <span id="footer-builtin-count"></span>
+        <span id="footer-local-count" style="margin-left:4px"></span>
+        <span id="footer-result-count" style="margin-left:4px"></span>
+      </div>
+      <div style="display:flex;gap:4px;align-items:center">
+        <button id="footer-export" class="secondary">Exportieren</button>
+        <button id="footer-import" class="secondary">Importieren</button>
+        <button id="footer-help" class="secondary">Hilfe</button>
+        <button id="footer-github" class="secondary icon-button" aria-label="GitHub" title="GitHub"> <svg class="icon"><use href="#icon-github"></use></svg> </button>
+      </div>
+    </footer>
+
+    <div class="modal" id="help-modal" role="dialog" aria-modal="true" aria-hidden="true" style="display:none">
+      <div class="sheet" style="max-width:680px">
+        <h3>Hilfe</h3>
+        <div style="color:var(--muted)">
+          <p>Kurzreferenz: Suche mit Leerzeichen getrennt; <code>attribut:wert</code> für gezielte Suche; <code>*</code> als Wildcard.</p>
+          <p>Tastatur: '/' Fokus Suche, 'r' Zufällig, 'a' Hinzufügen.</p>
+          <hr />
+          <h4 style="margin:8px 0 4px">Export / Import</h4>
+          <p>Export: Erzeugt eine JSON-Datei mit einer <code>meta</code>-Sektion (u. a. <code>exportedAt</code>, Zählern) sowie den enthaltenen <code>itemsLocal</code> und <code>itemsOverrides</code>. Datei lokal herunterladen (Download-Dialog).</p>
+          <p>Import: Wähle eine zuvor exportierte JSON-Datei. Das System zeigt eine Vorschau und bietet Optionen:</p>
+          <ul>
+            <li><strong>Zusammenführen</strong>: importierte lokale Elemente hinzufügen, vorhandene IDs überspringen.</li>
+            <li><strong>Überschreibungen ersetzen</strong>: bestehende Überschreibungen durch die importierten ersetzen.</li>
+            <li><strong>Automatisch umbenennen</strong>: bei ID-Konflikten importierte Elemente umbenennen (Suffix).</li>
+          </ul>
+          <p>Bei ungültiger Datei wird der Import abgebrochen und eine Fehlermeldung angezeigt.</p>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:12px"><button id="help-close" class="secondary">Schließen</button></div>
+      </div>
+    </div>
 
     <div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
       <div class="sheet" id="modal-sheet">
@@ -391,7 +450,7 @@
       window.__picker = { builtinItems, loadLocal, saveLocal, saveOverrides, generateId };
 
       // Application state
-      const state = { itemsLocal: [], itemsOverrides: {}, filters: {}, effectiveItems: [], lastFiltered: [], searchRaw: '', searchParsed: null };
+      const state = { itemsLocal: [], itemsOverrides: {}, filters: {}, effectiveItems: [], lastFiltered: [], searchRaw: '', searchParsed: null, renderLimit: 200 };
 
       function computeEffectiveItems(builtin, itemsLocal, overrides) {
         const effective = [];
@@ -414,6 +473,34 @@
       function deriveFilterKeys(items) { const keys = new Set(); for (const it of items) { if (it.attributes) { for (const k in it.attributes) keys.add(k); } } return Array.from(keys); }
       function collectFilterValues(items, key) { const vals = new Set(); for (const it of items) { if (it.attributes && it.attributes[key] !== undefined) vals.add(String(it.attributes[key])); } return Array.from(vals).sort(); }
       function escapeHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+      // Toast and confirm helpers (non-blocking)
+      const toastContainer = (function createToastContainer(){ const d = document.createElement('div'); d.className='toast-container'; d.setAttribute('role','status'); d.setAttribute('aria-live','polite'); document.body.appendChild(d); return d; })();
+      const _liveRegion = (function(){ const r = document.createElement('div'); r.style.position='absolute'; r.style.left='-9999px'; r.style.width='1px'; r.style.height='1px'; r.setAttribute('aria-live','polite'); r.setAttribute('aria-atomic','true'); document.body.appendChild(r); return r; })();
+      function announce(msg){ try{ _liveRegion.textContent = String(msg); }catch(e){} }
+      function showToast(msg, timeout=2500){ const t = document.createElement('div'); t.className='toast'; t.textContent = String(msg); toastContainer.appendChild(t); announce(msg); setTimeout(()=>{ try{ t.remove(); }catch(e){} }, timeout); }
+
+      // confirm modal element
+      const confirmModal = (function createConfirm(){ const el = document.createElement('div'); el.className='confirm-modal'; el.id='confirm-modal'; el.setAttribute('role','dialog'); el.setAttribute('aria-modal','true'); el.innerHTML = `<div class="sheet"><h4 id="confirm-title">Bestätigung</h4><div id="confirm-message" aria-live="polite"></div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button id="confirm-cancel" class="secondary">Abbrechen</button><button id="confirm-ok">OK</button></div></div>`; document.body.appendChild(el); el.querySelector('#confirm-cancel').addEventListener('click', ()=>{ el.style.display='none'; if (el._resolve) el._resolve(false); }); el.querySelector('#confirm-ok').addEventListener('click', ()=>{ el.style.display='none'; if (el._resolve) el._resolve(true); }); return el; })();
+      function showConfirm(msg){ return new Promise(resolve=>{ const el = confirmModal; el.querySelector('#confirm-message').textContent = String(msg); el.style.display='flex'; el._resolve = resolve; }); }
+      // import preview modal (merge or replace overrides)
+      const importModal = (function(){ const el = document.createElement('div'); el.className='confirm-modal'; el.id='import-modal'; el.setAttribute('role','dialog'); el.setAttribute('aria-modal','true'); el.innerHTML = `<div class="sheet"><h4 id="import-title">Import-Vorschau</h4><div id="import-summary" aria-live="polite"></div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button id="import-cancel" class="secondary">Abbrechen</button><button id="import-replace">Überschreibungen ersetzen</button><button id="import-merge">Zusammenführen</button></div></div>`; document.body.appendChild(el); el.querySelector('#import-cancel').addEventListener('click', ()=>{ el.style.display='none'; if (el._resolve) el._resolve(null); }); el.querySelector('#import-merge').addEventListener('click', ()=>{ el.style.display='none'; if (el._resolve) el._resolve('merge'); }); el.querySelector('#import-replace').addEventListener('click', ()=>{ el.style.display='none'; if (el._resolve) el._resolve('replace-overrides'); }); return el; })();
+      function showImportPreview(incomingLocal, incomingOverrides, conflicts){ return new Promise(resolve=>{ const el = importModal; let msg = `<div>Import-Vorschau:<div style="margin-top:8px">Lokale Elemente: ${incomingLocal.length}</div><div>Überschreibungen: ${Object.keys(incomingOverrides||{}).length}</div></div>`; if (conflicts && conflicts.length) { msg += `<div style="margin-top:8px;color:#a33">Konflikte: ${conflicts.length} (ID-Duplikate)</div>`; msg += `<div style="margin-top:6px">Bei Duplikaten: <strong>Merge</strong> (Duplikate überspringen), <strong>Überschreiben</strong> (lokale Elemente mit importierten überschreiben), oder <strong>Automatisch umbenennen</strong> (importierte Elemente umbenennen).</div>`; }
+        // extend buttons: merge-rename
+        el.querySelector('#import-summary').innerHTML = msg; // ensure we have the third button wired
+        const replaceBtn = el.querySelector('#import-replace'); const mergeBtn = el.querySelector('#import-merge');
+        // add/replace a 'merge-rename' button if conflicts exist
+        let renameBtn = el.querySelector('#import-rename'); if (!renameBtn) {
+          renameBtn = document.createElement('button'); renameBtn.id = 'import-rename'; renameBtn.textContent = 'Automatisch umbenennen'; el.querySelector('.sheet').appendChild(renameBtn);
+        }
+        // remove previous handlers
+        [replaceBtn, mergeBtn, renameBtn].forEach(b=>{ const nb = b.cloneNode(true); b.parentNode.replaceChild(nb, b); });
+        // re-acquire
+        const replaceBtn2 = el.querySelector('#import-replace'); const mergeBtn2 = el.querySelector('#import-merge'); const renameBtn2 = el.querySelector('#import-rename');
+        replaceBtn2.addEventListener('click', ()=>{ el.style.display='none'; if (el._resolve) el._resolve('replace-overrides'); });
+        mergeBtn2.addEventListener('click', ()=>{ el.style.display='none'; if (el._resolve) el._resolve('merge'); });
+        renameBtn2.addEventListener('click', ()=>{ el.style.display='none'; if (el._resolve) el._resolve('merge-rename'); });
+        el.style.display='flex'; el._resolve = resolve; }); }
 
       // Search helpers
       function escapeForRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
@@ -482,18 +569,9 @@
         if (ratings.length) { const lab = document.createElement('label'); lab.textContent = 'Bewertung'; const sel = document.createElement('select'); sel.dataset.filterKey = 'rating'; const optAll = document.createElement('option'); optAll.value = ''; optAll.textContent = 'Alle'; sel.appendChild(optAll); ratings.forEach(r => { const o = document.createElement('option'); o.value = String(r); o.textContent = String(r); sel.appendChild(o); }); sel.value = filtersObj['rating'] || ''; sel.addEventListener('change', () => { filtersObj['rating'] = sel.value; renderList(); }); lab.appendChild(sel); container.appendChild(lab); }
         const keys = deriveFilterKeys(items).sort(); keys.forEach(k => { if (!(k in filtersObj)) filtersObj[k] = ''; });
         keys.forEach(key => { const label = document.createElement('label'); label.textContent = key.charAt(0).toUpperCase() + key.slice(1); const select = document.createElement('select'); select.dataset.filterKey = key; const optAll = document.createElement('option'); optAll.value = ''; optAll.textContent = 'Alle'; select.appendChild(optAll); collectFilterValues(items, key).forEach(v => { const o = document.createElement('option'); o.value = v; o.textContent = v; select.appendChild(o); }); select.value = filtersObj[key] || ''; select.addEventListener('change', () => { filtersObj[key] = select.value; renderList(); }); label.appendChild(select); container.appendChild(label); });
-        // If we're rendering the list filters, move the Add button into this row so it sits on the same line
-        if (containerId === 'filters-list') {
-          const right = document.createElement('div'); right.style.marginLeft = 'auto'; right.style.display = 'flex'; right.style.gap = '8px';
-          const btnAdd = document.getElementById('btn-add');
-          if (btnAdd) right.appendChild(btnAdd);
-          container.appendChild(right);
-        }
-        // If rendering the random filters, move the random button into this row
-        if (containerId === 'filters-random') {
-          const right = document.createElement('div'); right.style.marginLeft = 'auto';
-          const btnRandom = document.getElementById('btn-random'); if (btnRandom) right.appendChild(btnRandom); container.appendChild(right);
-        }
+        // Note: keep Add button in its original position (do not move into filters row)
+        // keep the Random button in its original `.controls` location so it
+        // remains visible when filters change (do not move it into the filters row)
       }
 
       function getFilteredItems(items, filtersObj) {
@@ -524,7 +602,8 @@
       };
 
       function renderList() {
-        const list = document.getElementById('list'); list.innerHTML = ''; state.effectiveItems = computeEffectiveItems(builtinItems, state.itemsLocal, state.itemsOverrides);
+        const list = document.getElementById('list'); list.innerHTML = '';
+        state.effectiveItems = computeEffectiveItems(builtinItems, state.itemsLocal, state.itemsOverrides);
         // render separate filters
         if (!state.listFilters) state.listFilters = {};
         if (!state.randomFilters) state.randomFilters = {};
@@ -532,16 +611,20 @@
         renderFilters(state.effectiveItems, 'filters-random', state.randomFilters);
 
         // show builtin + local counts
-        const builtinCountEl = document.getElementById('builtin-count'); const localCountEl = document.getElementById('local-count');
+        const builtinCountEl = document.getElementById('builtin-count'); const localCountEl = document.getElementById('local-count'); const resultCountEl = document.getElementById('result-count');
         if (builtinCountEl) builtinCountEl.textContent = `${builtinItems.length} basis`;
         if (localCountEl) localCountEl.textContent = `${state.itemsLocal.length} lokal`;
 
         // list-specific filtering
         const filtered = getFilteredItems(state.effectiveItems, state.listFilters);
         state.lastFiltered = filtered;
-        if (filtered.length === 0) { const no = document.createElement('div'); no.className = 'card'; no.textContent = 'Keine Elemente entsprechen den Filtern.'; list.appendChild(no); return; }
+        if (resultCountEl) resultCountEl.textContent = `${filtered.length} / ${state.effectiveItems.length} angezeigt`;
+        if (filtered.length === 0) { const no = document.createElement('div'); no.className = 'card'; no.textContent = 'Keine Elemente entsprechen den Filtern.'; list.appendChild(no); }
+
+        // apply sort and optional render limit (virtualization/load more)
         filtered.sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')));
-        filtered.forEach(it => {
+        const limit = state.renderLimit || 200; const toRender = filtered.slice(0, Math.min(filtered.length, limit));
+        toRender.forEach(it => {
           const card = document.createElement('div'); card.className = 'card'; card.tabIndex = 0;
           const left = document.createElement('div');
           const titleRow = document.createElement('div'); titleRow.className = 'title-row';
@@ -568,20 +651,23 @@
 
           list.appendChild(card);
         });
-        // remove any existing footer
-        const prevFooter = document.getElementById('list-footer'); if (prevFooter && prevFooter.parentNode) prevFooter.parentNode.removeChild(prevFooter);
-        // footer: move counts and export/import controls to bottom of list
-        const footer = document.createElement('div'); footer.id = 'list-footer'; footer.style.display = 'flex'; footer.style.justifyContent = 'space-between'; footer.style.alignItems = 'center'; footer.style.marginTop = '12px';
-        const left = document.createElement('div'); left.style.color = 'var(--muted)'; left.style.fontSize = '13px';
-        const topCounts = document.getElementById('builtin-counts'); if (topCounts) left.appendChild(topCounts);
-        const right = document.createElement('div'); right.style.display = 'flex'; right.style.gap = '8px';
-        const listExport = document.getElementById('list-export'); const listImport = document.getElementById('list-import'); const listImportFile = document.getElementById('list-import-file');
-        if (listExport) right.appendChild(listExport);
-        if (listImport) right.appendChild(listImport);
-        // keep import file input attached but hidden
-        if (listImportFile) right.appendChild(listImportFile);
-        footer.appendChild(left); footer.appendChild(right);
-        list.parentNode.insertBefore(footer, list.nextSibling);
+
+        // Update persistent footer (counts, buttons) instead of recreating one per render
+        const appFooter = document.getElementById('app-footer');
+        if (appFooter) {
+          const fBuiltin = document.getElementById('footer-builtin-count'); const fLocal = document.getElementById('footer-local-count'); const fResult = document.getElementById('footer-result-count');
+          if (fBuiltin) fBuiltin.textContent = `${builtinItems.length} basis`;
+          if (fLocal) fLocal.textContent = `${state.itemsLocal.length} lokal`;
+          if (fResult) fResult.textContent = `${filtered.length} / ${state.effectiveItems.length} angezeigt`;
+          // wire footer export/import to perform actions directly
+          const fExport = document.getElementById('footer-export'); const fImport = document.getElementById('footer-import');
+          if (fExport) fExport.onclick = () => { doExport(); };
+          if (fImport) fImport.onclick = () => { const fi = document.getElementById('list-import-file'); if (fi) fi.click(); };
+        }
+        // show empty state message
+        if (filtered.length === 0) { const no = document.createElement('div'); no.className = 'card'; no.textContent = 'Keine Elemente entsprechen den Filtern.'; list.appendChild(no); }
+        // control sentinel visibility for incremental loading
+        const sentinel = document.getElementById('list-sentinel'); if (sentinel) { if (filtered.length > limit) sentinel.style.display = 'block'; else sentinel.style.display = 'none'; }
       }
 
       // attach actions after render
@@ -592,7 +678,7 @@
         actions.appendChild(edit);
         // local delete
         if (it.meta && it.meta.source === 'Lokal') {
-          const del = createIconButton('icon-trash', 'Löschen', (ev) => { ev.stopPropagation(); if (!confirm('Dieses lokale Element löschen?')) return; state.itemsLocal = state.itemsLocal.filter(x => x.id !== it.id); saveLocal(state.itemsLocal); renderList(); });
+          const del = createIconButton('icon-trash', 'Löschen', async (ev) => { ev.stopPropagation(); const ok = await showConfirm('Dieses lokale Element löschen?'); if (!ok) return; state.itemsLocal = state.itemsLocal.filter(x => x.id !== it.id); saveLocal(state.itemsLocal); renderList(); });
           actions.appendChild(del);
         } else if (it.meta && it.meta.source === 'Überschrieben') {
           /*
@@ -601,13 +687,13 @@
           actions.appendChild(rev);
           */
           // use trash icon instead of reset (per request) — performs the same reset action
-          const trashReset = createIconButton('icon-trash', 'Zurücksetzen (Löschen Überschreibung)', (ev) => { ev.stopPropagation(); if (!confirm('Überschreibung für dieses eingebaute Element zurücksetzen?')) return; delete state.itemsOverrides[it.id]; saveOverrides(state.itemsOverrides); renderList(); });
+          const trashReset = createIconButton('icon-trash', 'Zurücksetzen (Löschen Überschreibung)', async (ev) => { ev.stopPropagation(); const ok = await showConfirm('Überschreibung für dieses eingebaute Element zurücksetzen?'); if (!ok) return; delete state.itemsOverrides[it.id]; saveOverrides(state.itemsOverrides); renderList(); });
           // color trash as delete (red)
           trashReset.style.color = '#ff6666';
           actions.appendChild(trashReset);
         } else if (it.meta && it.meta.source === 'Eingebaut') {
           // allow soft-delete of builtins
-          const delBuilt = createIconButton('icon-trash', 'Löschen (eingebaut)', (ev) => { ev.stopPropagation(); if (!confirm('Dieses eingebaute Element ausblenden (löschen)?')) return; state.itemsOverrides[it.id] = Object.assign({}, state.itemsOverrides[it.id] || {}, { deleted: true }); saveOverrides(state.itemsOverrides); renderList(); });
+          const delBuilt = createIconButton('icon-trash', 'Löschen (eingebaut)', async (ev) => { ev.stopPropagation(); const ok = await showConfirm('Dieses eingebaute Element ausblenden (löschen)?'); if (!ok) return; state.itemsOverrides[it.id] = Object.assign({}, state.itemsOverrides[it.id] || {}, { deleted: true }); saveOverrides(state.itemsOverrides); renderList(); });
           actions.appendChild(delBuilt);
         }
         card.appendChild(actions);
@@ -617,31 +703,96 @@
       const _oldRenderList = renderList;
       renderList = function () { _oldRenderList(); const list = document.getElementById('list'); const cards = Array.from(list.children); const filtered = state.lastFiltered || []; for (let i = 0; i < cards.length && i < filtered.length; i++) { attachCardActions(cards[i], filtered[i]); } };
 
-      // modal handling
+      // modal handling + focus trap
       const editing = { id: null, type: null };
-      function clearModal() { const form = document.getElementById('item-form'); form.name.value = ''; form.rating.value = ''; document.getElementById('attr-rows').innerHTML = ''; editing.id = null; editing.type = null; }
-      function addAttrRow(key = '', value = '') { const rows = document.getElementById('attr-rows'); const wrap = document.createElement('div'); wrap.style.display = 'flex'; wrap.style.gap = '6px'; wrap.style.marginTop = '6px'; const k = document.createElement('input'); k.placeholder = 'Schlüssel'; k.value = key; k.style.flex = '1'; const v = document.createElement('input'); v.placeholder = 'Wert'; v.value = value; v.style.flex = '1'; const rem = document.createElement('button'); rem.type = 'button'; rem.textContent = '✕'; rem.title = 'Entfernen'; rem.className = 'secondary'; rem.addEventListener('click', () => rows.removeChild(wrap)); wrap.appendChild(k); wrap.appendChild(v); wrap.appendChild(rem); rows.appendChild(wrap); }
+      let _prevFocus = null;
+      function openModal(el) {
+        _prevFocus = document.activeElement;
+        el.style.display = 'flex'; el.setAttribute('aria-hidden','false');
+        const focusable = el.querySelectorAll('input,button,textarea,select,[tabindex]:not([tabindex="-1"])');
+        if (focusable && focusable.length) focusable[0].focus();
+        function trap(e){ if (e.key === 'Tab'){
+            const first = focusable[0]; const last = focusable[focusable.length-1]; if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); } else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); } }
+          if (e.key === 'Escape') { closeModal(el); }
+        }
+        el._trap = trap; document.addEventListener('keydown', trap);
+      }
+      function closeModal(el){ el.style.display = 'none'; el.setAttribute('aria-hidden','true'); if (el._trap) { document.removeEventListener('keydown', el._trap); delete el._trap; } try{ if (_prevFocus) _prevFocus.focus(); } catch(e){} }
+      function clearModal() { const form = document.getElementById('item-form'); form.name.value = ''; form.rating.value = ''; document.getElementById('attr-rows').innerHTML = ''; // remove attribute merge control if present
+        const mergeRow = document.getElementById('attr-merge-row'); if (mergeRow && mergeRow.parentNode) mergeRow.parentNode.removeChild(mergeRow);
+        editing.id = null; editing.type = null; document.getElementById('save').disabled = false; }
+      function validateAttrKeys(){ const rows = document.getElementById('attr-rows'); const keys = []; Array.from(rows.children).forEach(r=>{ const k = (r.children[0] && r.children[0].value || '').trim(); if(k) keys.push(k); }); const dup = keys.filter((v,i,a)=> a.indexOf(v)!==i); // duplicates
+        Array.from(rows.children).forEach(r=>{ const input = r.children[0]; const val = (input && input.value||'').trim(); if (dup.includes(val)) { input.style.borderColor='red'; } else { input.style.borderColor=''; } }); document.getElementById('save').disabled = dup.length>0; }
+      function addAttrRow(key = '', value = '') { const rows = document.getElementById('attr-rows'); const wrap = document.createElement('div'); wrap.style.display = 'flex'; wrap.style.gap = '6px'; wrap.style.marginTop = '6px'; const k = document.createElement('input'); k.placeholder = 'Schlüssel'; k.value = key; k.style.flex = '1'; const v = document.createElement('input'); v.placeholder = 'Wert'; v.value = value; v.style.flex = '1'; const rem = document.createElement('button'); rem.type = 'button'; rem.textContent = '✕'; rem.title = 'Entfernen'; rem.className = 'secondary'; rem.addEventListener('click', () => { rows.removeChild(wrap); validateAttrKeys(); }); k.addEventListener('input', validateAttrKeys); wrap.appendChild(k); wrap.appendChild(v); wrap.appendChild(rem); rows.appendChild(wrap); validateAttrKeys(); }
       document.getElementById('add-attr').addEventListener('click', () => addAttrRow());
-      function openModalForNew() { clearModal(); document.getElementById('modal-title').textContent = 'Element hinzufügen'; document.getElementById('modal').style.display = 'flex'; document.getElementById('modal').setAttribute('aria-hidden', 'false'); document.getElementById('item-form').name.focus(); }
-      function openModalForEdit(item) { clearModal(); document.getElementById('modal-title').textContent = (item.meta && item.meta.source === 'Eingebaut') ? 'Bearbeiten (Überschreiben)' : 'Element bearbeiten'; const form = document.getElementById('item-form'); form.name.value = item.name || ''; form.rating.value = item.rating || ''; if (item.attributes) { for (const k in item.attributes) addAttrRow(k, item.attributes[k]); } editing.id = item.id; editing.type = item.meta && item.meta.source ? item.meta.source : 'Lokal'; document.getElementById('modal').style.display = 'flex'; document.getElementById('modal').setAttribute('aria-hidden', 'false'); document.getElementById('item-form').name.focus(); }
+      function openModalForNew() { clearModal(); document.getElementById('modal-title').textContent = 'Element hinzufügen'; openModal(document.getElementById('modal')); }
+      function openModalForEdit(item) { clearModal(); document.getElementById('modal-title').textContent = (item.meta && item.meta.source === 'Eingebaut') ? 'Bearbeiten (Überschreiben)' : 'Element bearbeiten'; const form = document.getElementById('item-form'); form.name.value = item.name || ''; form.rating.value = item.rating || ''; if (item.attributes) { for (const k in item.attributes) addAttrRow(k, item.attributes[k]); } editing.id = item.id; editing.type = item.meta && item.meta.source ? item.meta.source : 'Lokal'; // if editing a builtin, add attribute-merge option
+        if (editing.type === 'Eingebaut'){
+          const sheet = document.getElementById('modal-sheet'); const mergeRow = document.createElement('div'); mergeRow.id = 'attr-merge-row'; mergeRow.style.marginTop='8px'; mergeRow.innerHTML = `<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" name="replaceAttributes" /> Attribute ersetzen (ansonsten nur gegebene Attribute überschreiben)</label>`; sheet.insertBefore(mergeRow, sheet.querySelector('#attr-rows'));
+        }
+        openModal(document.getElementById('modal'));
+        document.getElementById('item-form').name.focus(); }
 
-      document.getElementById('item-form').addEventListener('submit', (ev) => { ev.preventDefault(); const form = ev.target; const name = form.name.value.trim(); const rating = form.rating.value ? parseInt(form.rating.value, 10) : undefined; const rows = document.getElementById('attr-rows'); const attrs = {}; Array.from(rows.children).forEach(r => { const k = r.children[0].value.trim(); const v = r.children[1].value.trim(); if (k) attrs[k] = v; }); if (editing.id) { if (editing.type === 'Lokal') { const idx = state.itemsLocal.findIndex(x => x.id === editing.id); if (idx >= 0) { state.itemsLocal[idx] = Object.assign({}, state.itemsLocal[idx], { name, rating, attributes: attrs }); saveLocal(state.itemsLocal); } } else { const override = { name, rating, attributes: attrs }; state.itemsOverrides[editing.id] = override; saveOverrides(state.itemsOverrides); } } else { const id = generateId(); const item = { id, name, rating, attributes: attrs }; state.itemsLocal.push(item); saveLocal(state.itemsLocal); } document.getElementById('modal').style.display = 'none'; document.getElementById('modal').setAttribute('aria-hidden', 'true'); renderList(); });
+      document.getElementById('item-form').addEventListener('submit', (ev) => {
+        ev.preventDefault(); const form = ev.target; const name = form.name.value.trim(); const rating = form.rating.value ? parseInt(form.rating.value, 10) : undefined; const rows = document.getElementById('attr-rows'); const attrs = {}; Array.from(rows.children).forEach(r => { const k = r.children[0].value.trim(); const v = r.children[1].value.trim(); if (k) attrs[k] = v; }); if (editing.id) { if (editing.type === 'Lokal') { const idx = state.itemsLocal.findIndex(x => x.id === editing.id); if (idx >= 0) { state.itemsLocal[idx] = Object.assign({}, state.itemsLocal[idx], { name, rating, attributes: attrs }); saveLocal(state.itemsLocal); } } else { // builtin override: support attribute replace vs merge
+            const replaceAttr = form.replaceAttributes && form.replaceAttributes.checked;
+            const base = (builtinItems || []).find(b=>b.id===editing.id) || {};
+            const overrideAttrs = replaceAttr ? attrs : Object.assign({}, base.attributes || {}, attrs);
+            const override = { name, rating, attributes: overrideAttrs };
+            state.itemsOverrides[editing.id] = override; saveOverrides(state.itemsOverrides);
+          } } else { const id = generateId(); const item = { id, name, rating, attributes: attrs }; state.itemsLocal.push(item); saveLocal(state.itemsLocal); }
+        closeModal(document.getElementById('modal')); renderList(); });
 
-      document.getElementById('cancel').addEventListener('click', () => { document.getElementById('modal').style.display = 'none'; document.getElementById('modal').setAttribute('aria-hidden', 'true'); });
-      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { const mod = document.getElementById('modal'); if (mod.style.display === 'flex') { mod.style.display = 'none'; mod.setAttribute('aria-hidden', 'true'); } } });
+      document.getElementById('cancel').addEventListener('click', () => { closeModal(document.getElementById('modal')); });
 
       // Random, Export, Import, storage sync
       document.getElementById('btn-add').addEventListener('click', openModalForNew);
       document.getElementById('btn-random').addEventListener('click', () => {
         const arr = getFilteredItems(state.effectiveItems || [], state.randomFilters || {});
-        if (!arr || arr.length === 0) { alert('Keine Elemente zur Auswahl. Filter anpassen oder Elemente hinzufügen.'); return; }
+        if (!arr || arr.length === 0) { showToast('Keine Elemente zur Auswahl. Filter anpassen oder Elemente hinzufügen.'); return; }
         const pick = arr[Math.floor(Math.random() * arr.length)]; const rc = document.getElementById('result-content'); rc.innerHTML = `<div><strong>${escapeHtml(pick.name)}</strong><div class="meta">Bewertung:${pick.rating || '—'}</div>${pick.note ? '<div style="margin-top:6px">' + escapeHtml(pick.note) + '</div>' : ''}</div>`;
       });
 
-      // header export/import moved to list area: wire list export/import controls
-      document.getElementById('list-export').addEventListener('click', () => { const store = { itemsLocal: state.itemsLocal, itemsOverrides: state.itemsOverrides }; const blob = new Blob([JSON.stringify(store, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'meine-elemente.json'; a.click(); URL.revokeObjectURL(url); });
-      document.getElementById('list-import').addEventListener('click', () => { document.getElementById('list-import-file').click(); });
-      document.getElementById('list-import-file').addEventListener('change', (ev) => { const f = ev.target.files && ev.target.files[0]; if (!f) return; const reader = new FileReader(); reader.onload = (e) => { try { const parsed = JSON.parse(e.target.result); const incomingLocal = parsed.itemsLocal || []; const incomingOverrides = parsed.itemsOverrides || {}; const existingIds = new Set(state.itemsLocal.map(x => x.id)); incomingLocal.forEach(it => { if (!existingIds.has(it.id)) state.itemsLocal.push(it); }); state.itemsOverrides = Object.assign({}, state.itemsOverrides, incomingOverrides); saveLocal(state.itemsLocal); saveOverrides(state.itemsOverrides); renderList(); alert('Import abgeschlossen: Lokale Elemente angehängt, Überschreibungen zusammengeführt.'); } catch (err) { alert('Ungültige JSON-Datei'); } }; reader.readAsText(f); });
+      // header export/import moved to footer: provide reusable export function and guarded bindings
+      function doExport() {
+        const meta = { exportedAt: new Date().toISOString(), counts: { builtin: (builtinItems || []).length, local: (state.itemsLocal || []).length } };
+        const store = { meta, itemsLocal: state.itemsLocal, itemsOverrides: state.itemsOverrides };
+        const blob = new Blob([JSON.stringify(store, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; const dt = new Date(); const fn = `meine-elemente-${dt.getFullYear()}${String(dt.getMonth()+1).padStart(2,'0')}${String(dt.getDate()).padStart(2,'0')}-${String(dt.getHours()).padStart(2,'0')}${String(dt.getMinutes()).padStart(2,'0')}.json`; a.download = fn; a.click(); URL.revokeObjectURL(url);
+      }
+      const listExportEl = document.getElementById('list-export'); if (listExportEl) listExportEl.addEventListener('click', doExport);
+      const listImportEl = document.getElementById('list-import'); if (listImportEl) listImportEl.addEventListener('click', () => { const fi = document.getElementById('list-import-file'); if (fi) fi.click(); });
+      // import with preview options
+      document.getElementById('list-import-file').addEventListener('change', (ev) => {
+        const f = ev.target.files && ev.target.files[0]; if (!f) return; const reader = new FileReader(); reader.onload = async (e) => { try { const parsed = JSON.parse(e.target.result); const incomingLocal = parsed.itemsLocal || []; const incomingOverrides = parsed.itemsOverrides || {};
+            // detect duplicate IDs between incoming and existing local items
+            const existingIds = new Set(state.itemsLocal.map(x => x.id));
+            const conflicts = incomingLocal.filter(it => existingIds.has(it.id)).map(it => it.id);
+            const action = await showImportPreview(incomingLocal, incomingOverrides, conflicts);
+            if (!action) { showToast('Import abgebrochen'); return; }
+            if (action === 'merge') {
+              // merge: skip duplicates
+              incomingLocal.forEach(it => { if (!existingIds.has(it.id)) state.itemsLocal.push(it); });
+              state.itemsOverrides = Object.assign({}, state.itemsOverrides, incomingOverrides);
+            } else if (action === 'replace-overrides') {
+              // replace overrides + add non-duplicates
+              incomingLocal.forEach(it => { if (!existingIds.has(it.id)) state.itemsLocal.push(it); });
+              state.itemsOverrides = Object.assign({}, incomingOverrides);
+            } else if (action === 'merge-rename') {
+              // auto-rename duplicates by appending suffix
+              incomingLocal.forEach(it => {
+                let id = it.id;
+                if (existingIds.has(id)) {
+                  let n = 1; let newId = id + '-imp' + n; while (existingIds.has(newId)) { n++; newId = id + '-imp' + n; }
+                  it.id = newId; existingIds.add(newId); state.itemsLocal.push(it);
+                } else { existingIds.add(id); state.itemsLocal.push(it); }
+              });
+              state.itemsOverrides = Object.assign({}, state.itemsOverrides, incomingOverrides);
+            }
+            saveLocal(state.itemsLocal); saveOverrides(state.itemsOverrides); renderList(); showToast('Import abgeschlossen.');
+          } catch (err) { showToast('Ungültige JSON-Datei'); } };
+        reader.readAsText(f);
+      });
 
       // wire search input
       const searchEl = document.getElementById('search-input'); const searchClear = document.getElementById('search-clear');
@@ -654,6 +805,15 @@
         searchEl.addEventListener('input', onInput);
         searchClear.addEventListener('click', () => { searchEl.value = ''; state.searchRaw = ''; state.searchParsed = null; renderList(); });
       }
+
+      // keyboard shortcuts: '/' focus search, 'r' random, 'a' add
+      document.addEventListener('keydown', (e) => {
+        const tag = (document.activeElement && document.activeElement.tagName) || '';
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || (document.activeElement && document.activeElement.isContentEditable)) return;
+        if (e.key === '/') { e.preventDefault(); if (searchEl) searchEl.focus(); }
+        else if (e.key && e.key.toLowerCase() === 'r') { const br = document.getElementById('btn-random'); if (br) br.click(); }
+        else if (e.key && e.key.toLowerCase() === 'a') { openModalForNew(); }
+      });
 
       // convert the Add button into an icon-button (plus)
       const btnAdd = document.getElementById('btn-add');
@@ -676,6 +836,18 @@
 
       window.addEventListener('storage', (e) => { if (e.key === LS_KEYS.LOCAL || e.key === LS_KEYS.OVERRIDES) { const s = loadLocal(); state.itemsLocal = s.itemsLocal || []; state.itemsOverrides = s.itemsOverrides || {}; renderList(); } });
 
+      // observer for incremental loading (observes sentinel inside scrollable list)
+      let listObserver = null;
+      function setupListObserver() {
+        try {
+          const listEl = document.getElementById('list'); const sentinel = document.getElementById('list-sentinel');
+          if (!listEl || !sentinel || !window.IntersectionObserver) return;
+          if (listObserver) listObserver.disconnect();
+          listObserver = new IntersectionObserver((entries) => { entries.forEach(en => { if (en.isIntersecting) { state.renderLimit = (state.renderLimit || 200) + 200; listObserver.disconnect(); renderList(); } }); }, { root: document.getElementById('list'), rootMargin: '160px' });
+          listObserver.observe(sentinel);
+        } catch (e) { /* ignore */ }
+      }
+
       // init
       (async function init() {
         // load builtin items from data.json (next to index.html)
@@ -683,10 +855,79 @@
         if (loaded && loaded.length) builtinItems = loaded;
         const store = loadLocal(); state.itemsLocal = store.itemsLocal || []; state.itemsOverrides = store.itemsOverrides || {}; renderList(); // trigger an initial random pick
         try { document.getElementById('btn-random').click(); } catch (e) { }
+        // setup observer after initial render
+        setupListObserver();
+        // place the Random button inline with the result content (same row)
+        try {
+          const br = document.getElementById('btn-random');
+          const resultBox = document.getElementById('result');
+          const resultContent = document.getElementById('result-content');
+          if (br && resultBox && resultContent) {
+            // create a flex row to hold content and button side-by-side
+            const row = document.createElement('div');
+            row.style.display = 'flex';
+            row.style.alignItems = 'center';
+            row.style.justifyContent = 'space-between';
+            row.style.gap = '12px';
+            // detach button from previous parent
+            if (br.parentNode) br.parentNode.removeChild(br);
+            // replace resultContent with row, then append content and button
+            resultBox.replaceChild(row, resultContent);
+            // ensure the result content stays centered
+            resultContent.style.flex = '1';
+            resultContent.style.display = 'flex';
+            resultContent.style.justifyContent = 'center';
+            row.appendChild(resultContent);
+            const right = document.createElement('div'); right.style.display = 'flex'; right.style.alignItems = 'center'; right.appendChild(br);
+            // keep right container tight to its content
+            right.style.flex = '0 0 auto';
+            row.appendChild(right);
+          }
+        } catch (e) { /* ignore */ }
+        // wire footer help button
+        const fh = document.getElementById('footer-help'); if (fh) fh.addEventListener('click', ()=>{ openModal(document.getElementById('help-modal')); });
+        const hc = document.getElementById('help-close'); if (hc) hc.addEventListener('click', ()=>{ closeModal(document.getElementById('help-modal')); });
+        // wire footer github button
+        const fgh = document.getElementById('footer-github'); if (fgh) fgh.addEventListener('click', ()=>{ try{ window.open('https://github.com/oaldrian/computer-what-should-i-eat','_blank','noopener'); } catch(e){ location.href='https://github.com/oaldrian/computer-what-should-i-eat'; } });
       })();
 
-      // minimal tests
-      window.__picker.runTests = function () { const results = []; try { const s = loadLocal(); results.push(['loadLocal gibt Objekt zurück', !!s]); const eff = computeEffectiveItems(builtinItems, s.itemsLocal || [], s.itemsOverrides || {}); results.push(['computeEffectiveItems gibt Array zurück', Array.isArray(eff)]); results.push(['renderList läuft', (function () { try { renderList(); return true; } catch (e) { return false; } })()]); } catch (e) { results.push(['Ausnahme', String(e)]); } console.group('Picker-Tests'); results.forEach(r => console.log(r[0], '->', r[1])); console.groupEnd(); return results; };
+      // enhanced test runner for merge & filter logic
+      window.__picker.runTests = function () {
+        const assert = (name, cond) => ({ name, pass: !!cond });
+        const results = [];
+        try {
+          // basic store load
+          const s = loadLocal(); results.push(assert('loadLocal gibt Objekt zurück', !!s));
+
+          // computeEffectiveItems: deleted override should hide builtin
+          const builtin = [{ id: 'b1', name: 'Base', attributes: { k: 'v' } }];
+          const overrides = { b1: { deleted: true } };
+          const eff1 = computeEffectiveItems(builtin, [], overrides);
+          results.push(assert('deleted override verbirgt builtin', Array.isArray(eff1) && eff1.length === 0));
+
+          // computeEffectiveItems: attribute merge shallow
+          const builtin2 = [{ id: 'b2', name: 'Base2', attributes: { a: '1', b: '2' } }];
+          const overrides2 = { b2: { attributes: { b: '99' } } };
+          const eff2 = computeEffectiveItems(builtin2, [], overrides2);
+          const hasMerged = eff2.length === 1 && eff2[0].attributes.a === '1' && eff2[0].attributes.b === '99';
+          results.push(assert('override merged attributes (shallow)', hasMerged));
+
+          // search parsing and wildcard
+          const parsed = parseSearchQuery('Apple cuisine:amer*');
+          const item = { name: 'Apple Pie', note: 'delicious', attributes: { cuisine: 'american' } };
+          const matches = matchesSearch(item, parsed);
+          results.push(assert('search wildcard & attr filter match', !!matches));
+
+          // getFilteredItems by rating
+          const items = [{ id: 'x', name: 'X', rating: 5, attributes: { t: 'a' } }];
+          const filtered = getFilteredItems(items, { rating: '5' });
+          results.push(assert('getFilteredItems filters by rating', filtered.length === 1));
+
+          // renderList should run without exceptions
+          try { renderList(); results.push(assert('renderList läuft', true)); } catch (e) { results.push(assert('renderList läuft', false)); }
+        } catch (e) { results.push({ name: 'Ausnahme', pass: false, message: String(e) }); }
+        console.group('Picker-Tests'); results.forEach(r => console.log(r.name, '->', r.pass)); console.groupEnd(); return results;
+      };
 
     })();
   </script>

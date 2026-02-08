@@ -6,3 +6,6 @@ SESSION_LOG.md
 TECHNICAL_SPECIFICATION.md
 WORKSPACE_SNAPSHOT.md
 TODO.md
+data/base_data.csv
+data.csv
+data/builtin_items.json

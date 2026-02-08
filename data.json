@@ -1,6 +1,46 @@
 [
-  { "id": "b1", "name": "French Fries", "attributes": { "sweet": "no", "carb": "potato", "meat": "no" }, "rating": 3, "note": "Beliebte Beilage" },
-  { "id": "b2", "name": "Chicken Curry", "attributes": { "sweet": "no", "carb": "rice", "meat": "chicken" }, "rating": 4, "note": "Würzig" },
-  { "id": "b3", "name": "Apple Pie", "attributes": { "sweet": "yes", "carb": "bread", "meat": "no" }, "rating": 5, "note": "Süß und beliebt" },
-  { "id": "b4", "name": "Beef Noodles", "attributes": { "sweet": "no", "carb": "noodle", "meat": "beef" }, "rating": 4, "note": "Herzhaft" }
+  {
+    "id": "b1",
+    "name": "French Fries",
+    "rating": 3,
+    "note": "Beliebte Beilage",
+    "attributes": {
+      "sweet": "no",
+      "carb": "potato",
+      "meat": "no"
+    }
+  },
+  {
+    "id": "b2",
+    "name": "Chicken Curry",
+    "rating": 4,
+    "note": "Würzig",
+    "attributes": {
+      "sweet": "no",
+      "carb": "rice",
+      "meat": "chicken"
+    }
+  },
+  {
+    "id": "b3",
+    "name": "Apple Pie",
+    "rating": 5,
+    "note": "Süß und beliebt",
+    "attributes": {
+      "sweet": "yes",
+      "carb": "bread",
+      "meat": "no"
+    }
+  },
+  {
+    "id": "b4",
+    "name": "Beef Noodles",
+    "rating": 4,
+    "note": "Herzhaft",
+    "attributes": {
+      "sweet": "no",
+      "carb": "noodle",
+      "meat": "beef"
+    }
+  }
 ]
