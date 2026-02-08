@@ -354,13 +354,30 @@
     (function () {
       'use strict';
 
-      /** Builtin dataset */
-      const builtinItems = [
-        { id: 'b1', name: 'French Fries', attributes: { sweet: 'no', carb: 'potato', meat: 'no' }, rating: 3, note: 'Beliebte Beilage' },
-        { id: 'b2', name: 'Chicken Curry', attributes: { sweet: 'no', carb: 'rice', meat: 'chicken' }, rating: 4, note: 'Würzig' },
-        { id: 'b3', name: 'Apple Pie', attributes: { sweet: 'yes', carb: 'bread', meat: 'no' }, rating: 5, note: 'Süß und beliebt' },
-        { id: 'b4', name: 'Beef Noodles', attributes: { sweet: 'no', carb: 'noodle', meat: 'beef' }, rating: 4, note: 'Herzhaft' }
-      ];
+      /** Builtin dataset (loaded from data.json next to index.html) */
+      let builtinItems = [];
+
+      async function loadBuiltinFromJson(path = 'data.json') {
+        try {
+          const res = await fetch(path, { cache: 'no-store' });
+          if (!res.ok) {
+            console.warn('Could not load builtin items from', path, res.status);
+            return [];
+          }
+          const parsed = await res.json();
+          if (!Array.isArray(parsed)) return [];
+          return parsed.map(p => {
+            // ensure shape: id, name, attributes, rating, note
+            const it = Object.assign({}, p);
+            it.attributes = it.attributes || {};
+            it.note = it.note || '';
+            return it;
+          });
+        } catch (e) {
+          console.warn('Failed to load builtin JSON', e);
+          return [];
+        }
+      }
 
       const LS_KEYS = { LOCAL: 'picker_items_local', OVERRIDES: 'picker_items_overrides' };
 
@@ -660,7 +677,10 @@
       window.addEventListener('storage', (e) => { if (e.key === LS_KEYS.LOCAL || e.key === LS_KEYS.OVERRIDES) { const s = loadLocal(); state.itemsLocal = s.itemsLocal || []; state.itemsOverrides = s.itemsOverrides || {}; renderList(); } });
 
       // init
-      (function init() {
+      (async function init() {
+        // load builtin items from data.json (next to index.html)
+        const loaded = await loadBuiltinFromJson('data.json');
+        if (loaded && loaded.length) builtinItems = loaded;
         const store = loadLocal(); state.itemsLocal = store.itemsLocal || []; state.itemsOverrides = store.itemsOverrides || {}; renderList(); // trigger an initial random pick
         try { document.getElementById('btn-random').click(); } catch (e) { }
       })();

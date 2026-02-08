@@ -1,0 +1,6 @@
+[
+  { "id": "b1", "name": "French Fries", "attributes": { "sweet": "no", "carb": "potato", "meat": "no" }, "rating": 3, "note": "Beliebte Beilage" },
+  { "id": "b2", "name": "Chicken Curry", "attributes": { "sweet": "no", "carb": "rice", "meat": "chicken" }, "rating": 4, "note": "Würzig" },
+  { "id": "b3", "name": "Apple Pie", "attributes": { "sweet": "yes", "carb": "bread", "meat": "no" }, "rating": 5, "note": "Süß und beliebt" },
+  { "id": "b4", "name": "Beef Noodles", "attributes": { "sweet": "no", "carb": "noodle", "meat": "beef" }, "rating": 4, "note": "Herzhaft" }
+]
